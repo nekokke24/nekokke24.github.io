@@ -1,6 +1,5 @@
 title: blog by nekokke24
-description: > # this means to ignore newlines until "baseurl:"
- フロントエンド系の記事を書いています。 
+description: フロントエンド系の記事を書いています。 
 permalink: ':title/'
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 site-twitter: #if your site has a twitter account, enter it here
