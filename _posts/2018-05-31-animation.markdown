@@ -3,7 +3,7 @@ layout: post
 title: 気持ちのよいアニメーションを けして枯れない涙を
 date: 2018-05-31 00:00:00 +0900
 description: 気持ちのよいアニメーションについて
-img: thumbnail-workflow.jpg
+img: thumbnail-180531.png
 tags: [Css] 
 ---
 

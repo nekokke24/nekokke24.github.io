@@ -3,7 +3,7 @@ layout: post
 title: こんなflexは嫌だ
 date: 2018-05-30 00:00:00 +0900
 description: こんなflexは嫌だ
-img: thumbnail-mac.jpg
+img: thumbnail-180530.png
 tags: [Css] 
 ---
 <style>
