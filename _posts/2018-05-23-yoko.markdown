@@ -3,7 +3,7 @@ layout: post
 title: 横並びに強いエンジニアへ
 date: 2018-05-23 00:00:00 +0900
 description: フロントエンドの横並びに関して紹介します。
-img: thumbnail-how-to-start.jpg
+img: thumbnail-180523.png
 tags: [Css] 
 ---
 <style>

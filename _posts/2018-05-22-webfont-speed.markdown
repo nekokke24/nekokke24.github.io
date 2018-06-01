@@ -3,7 +3,7 @@ layout: post
 title: 週末なにしてますか？ 忙しいですか？ 検証してもらっていいですか？
 date: 2018-05-22 00:00:00 +0900
 description: webfont系のよもやまやります。
-img: thumbnail-we-in-rest.jpg
+img: thumbnail-180522.png
 tags: [Css]
 ---
 

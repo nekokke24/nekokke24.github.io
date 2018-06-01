@@ -3,7 +3,7 @@ layout: post
 title: 現場レベルで使えるCSS横中央寄せ
 date: 2018-05-21 00:00:00 +0900
 description: 現場レベルで使えるCSS横中央寄せ
-img: thumbnail-software.jpg
+img: thumbnail-180521.png
 tags: [Css] 
 ---
 

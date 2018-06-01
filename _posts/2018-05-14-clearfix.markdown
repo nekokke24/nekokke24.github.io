@@ -3,7 +3,7 @@ layout: post
 title: 本当にあなたは理解してコードを書いているのか？(clearfix編)
 date: 2018-05-14 00:00:00 +0900
 description: 本当にあなたは理解してコードを書いているのか？(clearfix編)
-img: thumbnail-clearfix.jpg
+img: thumbnail-180514.png
 tags: [Css]
 ---
 ## 前段
