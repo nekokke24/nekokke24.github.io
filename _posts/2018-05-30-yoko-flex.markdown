@@ -16,7 +16,6 @@ tags: [Css]
 	* {
 		word-break: break-all;
 	}
-
 </style>
 
 ## 前段として
