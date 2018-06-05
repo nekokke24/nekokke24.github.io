@@ -1,5 +1,5 @@
-title: Blog by @nekokke24
-description: フロントエンド系の記事を書いています。 
+title: 人民のためのフロントエンドブログ
+description: 人民のためにフロントエンド系の記事を書いています。 
 permalink: ':title/'
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 site-twitter: #if your site has a twitter account, enter it here
@@ -7,7 +7,7 @@ site-twitter: #if your site has a twitter account, enter it here
 # Author Settings
 author: nekokke24
 author-img: icon.png # add your photo
-about-author: フロントエンド系の記事を書いています。
+about-author: 人民のためにフロントエンド系の記事を書いています。 
 social-twitter: # add your Twitter handle
 social-facebook: # add your Facebook handle
 social-github: artemsheludko # add your Github handle
