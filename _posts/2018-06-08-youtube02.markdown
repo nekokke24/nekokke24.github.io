@@ -40,7 +40,7 @@ tags: [Js]
 
 前回のサンプルから改良していきましょう。
 
-
+### before
 ```
 <!DOCTYPE html>
 <html>
@@ -94,6 +94,7 @@ tags: [Js]
 
 こんな感じで
 
+### after
 ```
 <!DOCTYPE html>
 <html>
@@ -175,7 +176,7 @@ tags: [Js]
 
 いくつかポイントをいうと
 
-### 1.thisの向き先を変更する
+### ■thisの向き先を変更する
 
 ```
 NEKOKKE
@@ -200,7 +201,7 @@ changePath : function(){
 
 なのでbindメソッドを使って、実行時のthisの向き先を変更します。
 
-### 2.onYouTubeIframeAPIReadyについて
+### ■onYouTubeIframeAPIReadyについて
 
 ```
 window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady;
@@ -212,7 +213,7 @@ apiが読み込まれた時点でwindowオブジェクト直下に生成され�
 
 なので上記のコードで処理を上書きします。
 
-### etc
+### ■etc
 
 あとは、マジックナンバーをなくすとかですかね
 
@@ -223,7 +224,22 @@ apiが読み込まれた時点でwindowオブジェクト直下に生成され�
 
 ## youtubeAPI 基本編② -複数動画の再生-
 
-### 1.idをつけないといけない
+### 1.展開について
+
+展開については以下のように今まで1つのidに対して1つのnewをしていましたが
+
+今度は複数に対して行わなければなりません。
+
+##### 今まで
+
+![1.png](/assets/img/youtube02/1.png)
+
+##### これから
+
+![3.png](/assets/img/youtube02/3.png)
+
+
+#### 1-1.idをつけないといけない
 
 YTPlayerはクラスで展開できないため
 
@@ -233,29 +249,42 @@ idをつけることになります。
 
 動画の数が読めない場合はjsでidを付与する必要があります。
 
+![2.png](/assets/img/youtube02/2.png)
+
+コードの方は
+
+
 ```
 <div class="player"></div>
 <div class="player"></div>
 
-this.players = document.querySelectorAll('.player');
+this.playerSelectors = document.querySelectorAll('.player');
 ```
 まず、idではなくクラスを付与して取得しましょう。
 
 ```
 setId : function(){
-	for (var i = 0; i < this.players.length; i++) {
-		this.players[i].id = 'player' + i;
+	for (var i = 0; i < this.playerSelectors.length; i++) {
+		this.playerSelectors[i].id = 'player' + i;
 	}
 }
 ```
 その後にidを付与します。
 
-### 2.展開について
+#### 1-2.newをループで回す
+
+固有のidがついたので次は要素の数だけ
+
+YT.Playerをnewしましょう。
+
+![3.png](/assets/img/youtube02/3.png)
+
+コードの方は
 
 ```
 onYouTubeIframeAPIReady : function(){
-	for (var i = 0; i < this.players.length; i++) {
-		this.player[i] = new YT.Player('player' + i, {
+	for (var i = 0; i < this.playerSelectors.length; i++) {
+		this.player = new YT.Player('player' + i, {
 			height: '360',
 			width: '640',
 			videoId: 'M7lc1UVf-VE',
@@ -295,7 +324,7 @@ onYouTubeIframeAPIReady : function(){
 		setParameters : function(){
 			this.player = null;
 			this.done = false;
-			this.players = document.querySelectorAll('.player');
+			this.playerSelectors = document.querySelectorAll('.player');
 		},
 		prepare : function(){
 			this.addAPI();
@@ -310,12 +339,12 @@ onYouTubeIframeAPIReady : function(){
 			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 		},
 		setId : function(){
-			for (var i = 0; i < this.players.length; i++) {
-				this.players[i].id = 'player' + i;
+			for (var i = 0; i < this.playerSelectors.length; i++) {
+				this.playerSelectors[i].id = 'player' + i;
 			}
 		},
 		onYouTubeIframeAPIReady : function(){
-			for (var i = 0; i < this.players.length; i++) {
+			for (var i = 0; i < this.playerSelectors.length; i++) {
 				this.player = new YT.Player('player' + i, {
 					height: '360',
 					width: '640',
@@ -360,11 +389,13 @@ onYouTubeIframeAPIReady : function(){
 
 なぜかというとフラグ用のthis.done変数が同じthis.doneを参照しているのと
 
-this.playerに一つのYT.Playerしか入っていないので
+this.playerに一つのYT.Playerしか入っていないので管理が上手くいっていない。
 
-挙動がおかしいです。
+ので挙動がおかしいです。
 
-YT.Playerに関しては配列で管理して
+YT.Playerに関しては配列で管理しましょう。
+
+あとは、
 
 done変数を個別でフラグ持たせたいので
 
@@ -374,7 +405,21 @@ done変数を個別でフラグ持たせたいので
 
 この中にフラグを忍ばせましょう。
 
-### 3.this.playerに関して
+### 2.管理について
+
+管理に関しては
+
+##### 今まではこれ
+
+![4.png](/assets/img/youtube02/4.png)
+
+##### 今後は配列を作って管理する。
+
+![5.png](/assets/img/youtube02/5.png)
+
+#### 2-1.this.playerを削除し...
+
+this.playerContainerという配列を作成して、複数のYT.Playerを管理しよう
 
 ```
 this.playerContainer = [];
@@ -393,9 +438,18 @@ for (var i = 0; i < this.players.length; i++) {
 }
 ```
 
-後で、管理しやすいように配列にしちゃいましょう。
+後で、管理しやすいように配列にしちゃいます。
 
-次に
+#### 2-2.this.playerの実行処理を変更
+
+次にstopVideo内部のthis.player.stopVideo()を変更します。
+
+##### 今までは
+![7.png](/assets/img/youtube02/7.png)
+
+##### 変更後は
+![8.png](/assets/img/youtube02/8.png)
+
 
 ```
 onPlayerStateChange : function(event){
@@ -410,17 +464,28 @@ stopVideo : function(event){
 }
 ```
 
-ここもthis.playerContainerで番号管理して実行より
+こうすることで
 
-eventを引数で渡してくるほうが楽なので
+stopVideoを実行するにあたり
 
-そのように変更
+this.playerContainerで番号管理しオブジェクトから実行するより
 
-### 4.done変数に関して
+eventを引数で渡してくるほうが楽です。
+
+#### 2-3.done変数に関して
+
+共通のdone変数を参照するのではなく
+
+各newしたオブジェクトに埋め込んでそれぞれ参照するように変更します。
+
+#### こんな感じ
+![6.png](/assets/img/youtube02/6.png)
+
+ビタミン！
 
 YT.Playerの身体に
 
-私の作った製造番号とdone変数を埋め込んで行きます。
+私の作った製造番号とdone変数を埋め込みます。
 
 製造番号に関しては、後々何かと便利なので入れます。
 
@@ -452,6 +517,8 @@ event.target.customOpt.done = true;
 ふう
 
 これで挙動的には一緒になりました。
+
+### 3.まとめ
 
 ```
 <!DOCTYPE html>
@@ -538,7 +605,7 @@ event.target.customOpt.done = true;
 </html>
 ```
 
-### 6.あとはvideoIDを外部から変更できるように外付けにしましょう。
+#### 3-1.あとはvideoIDを外部から変更できるように外付けにしましょう。
 
 ```
 <div class="player" data-youtube-id="M7lc1UVf-VE"></div>

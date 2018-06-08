@@ -17,7 +17,7 @@
 		},
 		setParameters : function(){
 			this.playerContainer = [];
-			this.players = document.querySelectorAll('.player');
+			this.playerSelectors = document.querySelectorAll('.player');
 		},
 		prepare : function(){
 			this.addAPI();
@@ -32,24 +32,24 @@
 			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 		},
 		setId : function(){
-			for (var i = 0; i < this.players.length; i++) {
-				this.players[i].id = 'player' + i;
+			for (var i = 0; i < this.playerSelectors.length; i++) {
+				this.playerSelectors[i].id = 'player' + i;
 			}
 		},
 		onYouTubeIframeAPIReady : function(){
-			for (var i = 0; i < this.players.length; i++) {
+			for (var i = 0; i < this.playerSelectors.length; i++) {
 				this.playerContainer[i] = new YT.Player('player' + i, {
 					height: '360',
 					width: '640',
 					done : false,
-					videoId: this.players[i].getAttribute('data-youtube-id'),
+					videoId: this.playerSelectors[i].getAttribute('data-youtube-id'),
 					events: {
 						'onReady': this.onPlayerReady,
 						'onStateChange': this.onPlayerStateChange
 					}
 				});
 			}
-			for (var i = 0; i < this.players.length; i++) {
+			for (var i = 0; i < this.playerSelectors.length; i++) {
 				this.playerContainer[i].customOpt = {
 					index : i,
 					done : false
