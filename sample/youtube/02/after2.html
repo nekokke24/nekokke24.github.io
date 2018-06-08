@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div class="player" data-youtube-id="M7lc1UVf-VE"></div>
+<div class="player" data-youtube-id="7ROwBMBlEWM"></div>
+
+<script>
+	var NEKOKKE = NEKOKKE || {};
+
+	NEKOKKE.YOUTUBE = {
+		opt : {
+			stopWaitTime : 6000
+		},
+		init : function(){
+			this.setParameters();
+			this.prepare();
+		},
+		setParameters : function(){
+			this.playerContainer = [];
+			this.players = document.querySelectorAll('.player');
+		},
+		prepare : function(){
+			this.addAPI();
+			this.setId();
+			this.changePath();
+			window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady;
+		},
+		addAPI : function(){
+			var tag = document.createElement('script');
+			tag.src = "https://www.youtube.com/iframe_api";
+			var firstScriptTag = document.getElementsByTagName('script')[0];
+			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+		},
+		setId : function(){
+			for (var i = 0; i < this.players.length; i++) {
+				this.players[i].id = 'player' + i;
+			}
+		},
+		onYouTubeIframeAPIReady : function(){
+			for (var i = 0; i < this.players.length; i++) {
+				this.playerContainer[i] = new YT.Player('player' + i, {
+					height: '360',
+					width: '640',
+					done : false,
+					videoId: this.players[i].getAttribute('data-youtube-id'),
+					events: {
+						'onReady': this.onPlayerReady,
+						'onStateChange': this.onPlayerStateChange
+					}
+				});
+			}
+			for (var i = 0; i < this.players.length; i++) {
+				this.playerContainer[i].customOpt = {
+					index : i,
+					done : false
+				};
+			}
+		},
+		onPlayerReady : function(event){
+			event.target.playVideo();
+		},
+		onPlayerStateChange : function(event){
+			var _self = this;
+			if (event.data == YT.PlayerState.PLAYING && !event.target.customOpt.done) {
+				setTimeout(function(){_self.stopVideo(event);}, this.opt.stopWaitTime);
+				this.playerContainer[event.target.customOpt.index].customOpt.done = true;
+			}
+		},
+		stopVideo : function(event){
+			event.target.stopVideo();
+		},
+		changePath : function(){
+			this.onPlayerReady = this.onPlayerReady.bind(this);
+			this.onPlayerStateChange = this.onPlayerStateChange.bind(this);
+			this.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
+		}
+	};
+
+	NEKOKKE.YOUTUBE.init();
+</script>
+</body>
+</html>

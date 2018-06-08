@@ -4,7 +4,7 @@ title: 動画周りで困らないために（ youtubeAPI 基本編① ）
 date: 2018-06-05 00:00:00 +0900
 description: 動画動画周りで困らないために（ youtubeAPI 基本編① ）
 img: thumbnail-180604.png
-tags: [Css] 
+tags: [Js] 
 ---
 <style>
 	ul,li {

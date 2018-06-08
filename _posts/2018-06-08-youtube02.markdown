@@ -1,0 +1,662 @@
+---
+layout: post
+title: だいたい少人数だとよく喋るのに、大人数だと静か（ youtubeAPI 基本編② ）
+date: 2018-06-08 00:00:00 +0900
+description: だいたい少人数だとよく喋るのに、大人数だと静か（ youtubeAPI 基本編② ）
+img: thumbnail-180608.png
+tags: [Js] 
+---
+<style>
+	ul,li {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		list-style-type: none;
+	}
+	* {
+		word-break: break-all;
+	}
+</style>
+
+## 前段として
+
+基本的に1日1記事を目指していますが
+
+昨日は雨だったのでブログお休みしました。
+
+あと、apple touch icon 追加しました。
+
+ぜひぜひ、iphone safariから「ホーム画面に追加」してください。
+
+絵は嫁が描いてくれてます。
+
+私の好きなものを入れてもらいました。
+
+ビールと天使、そして裸と金髪です。
+
+では前回に引き続きyoutubeAPIやっていきましょう。
+
+## youtubeAPI 基本編② -書き換え-
+
+前回のサンプルから改良していきましょう。
+
+
+```
+<!DOCTYPE html>
+<html>
+<body>
+<div id="player"></div>
+
+<script>
+	var tag = document.createElement('script');
+
+	tag.src = "https://www.youtube.com/iframe_api";
+	var firstScriptTag = document.getElementsByTagName('script')[0];
+	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+	var player;
+	function onYouTubeIframeAPIReady() {
+		player = new YT.Player('player', {
+			height: '360',
+			width: '640',
+			videoId: 'M7lc1UVf-VE',
+			events: {
+				'onReady': onPlayerReady,
+				'onStateChange': onPlayerStateChange
+			}
+		});
+	}
+
+	function onPlayerReady(event) {
+		event.target.playVideo();
+	}
+
+	var done = false;
+	function onPlayerStateChange(event) {
+		if (event.data == YT.PlayerState.PLAYING && !done) {
+			setTimeout(stopVideo, 6000);
+			done = true;
+		}
+	}
+	function stopVideo() {
+		player.stopVideo();
+	}
+</script>
+</body>
+</html>
+```
+
+まずなんですが
+
+このままだと色々と面倒なので
+
+私の書きやすい方法にかえます。
+
+こんな感じで
+
+```
+<!DOCTYPE html>
+<html>
+<body>
+<div id="player"></div>
+
+<script>
+	var NEKOKKE = NEKOKKE || {};
+
+	NEKOKKE.YOUTUBE = {
+		opt : {
+			stopWaitTime : 6000
+		},
+		init : function(){
+			this.setParameters();
+			this.prepare();
+		},
+		setParameters : function(){
+			this.player = null;
+			this.done = false;
+		},
+		prepare : function(){
+			this.addAPI();
+			this.changePath();
+			window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady;
+		},
+		addAPI : function(){
+			var tag = document.createElement('script');
+			tag.src = "https://www.youtube.com/iframe_api";
+			var firstScriptTag = document.getElementsByTagName('script')[0];
+			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+		},
+		onYouTubeIframeAPIReady : function(){
+			this.player = new YT.Player('player', {
+				height: '360',
+				width: '640',
+				videoId: 'M7lc1UVf-VE',
+				events: {
+					'onReady': this.onPlayerReady,
+					'onStateChange': this.onPlayerStateChange
+				}
+			});
+		},
+		onPlayerReady : function(event){
+			event.target.playVideo();
+		},
+		onPlayerStateChange : function(event){
+			var _self = this;
+			if (event.data == YT.PlayerState.PLAYING && !this.done) {
+				setTimeout(function(){_self.stopVideo();}, this.opt.stopWaitTime);
+				this.done = true;
+			}
+		},
+		stopVideo : function(){
+			this.player.stopVideo();
+		},
+		changePath : function(){
+			this.onPlayerReady = this.onPlayerReady.bind(this);
+			this.onPlayerStateChange = this.onPlayerStateChange.bind(this);
+			this.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
+		}
+	};
+
+	NEKOKKE.YOUTUBE.init();
+</script>
+</body>
+</html>
+```
+
+やっていることは一緒です。
+
+簡単にいうとNEKOKKEという名前空間を作って
+
+その中に一つの処理としてYOUTUBEというオブジェクトを定義
+
+各処理に名前をつけてオブジェクト化して
+
+良きタイミングで実行です。
+
+いくつかポイントをいうと
+
+### 1.thisの向き先を変更する
+
+```
+NEKOKKE
+	> YOUTUBE
+		> 各処理
+```
+オブジェクトの構造はこのようになっていて
+
+各処理の中でthisを用いてYOUTUBEを参照しています。
+
+このままだとYTPlayer内部のfunctionで実行されてしまうため
+
+thisがYOUTUBEを参照できません。
+
+```
+changePath : function(){
+	this.onPlayerReady = this.onPlayerReady.bind(this);
+	this.onPlayerStateChange = this.onPlayerStateChange.bind(this);
+	this.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
+}
+```
+
+なのでbindメソッドを使って、実行時のthisの向き先を変更します。
+
+### 2.onYouTubeIframeAPIReadyについて
+
+```
+window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady;
+```
+
+onYouTubeIframeAPIReadyに関しては
+
+apiが読み込まれた時点でwindowオブジェクト直下に生成されます。
+
+なので上記のコードで処理を上書きします。
+
+### etc
+
+あとは、マジックナンバーをなくすとかですかね
+
+一旦、こちらをベースにやっていきたいです。
+
+[サンプルはこちら](/sample/youtube/02/before.html "　")
+
+
+## youtubeAPI 基本編② -複数動画の再生-
+
+### 1.idをつけないといけない
+
+YTPlayerはクラスで展開できないため
+
+idをつけることになります。
+
+そうなるとユニークなものをつけないといけないので
+
+動画の数が読めない場合はjsでidを付与する必要があります。
+
+```
+<div class="player"></div>
+<div class="player"></div>
+
+this.players = document.querySelectorAll('.player');
+```
+まず、idではなくクラスを付与して取得しましょう。
+
+```
+setId : function(){
+	for (var i = 0; i < this.players.length; i++) {
+		this.players[i].id = 'player' + i;
+	}
+}
+```
+その後にidを付与します。
+
+```
+onYouTubeIframeAPIReady : function(){
+	for (var i = 0; i < this.players.length; i++) {
+		this.player[i] = new YT.Player('player' + i, {
+			height: '360',
+			width: '640',
+			videoId: 'M7lc1UVf-VE',
+			events: {
+				'onReady': this.onPlayerReady,
+				'onStateChange': this.onPlayerStateChange
+			}
+		});
+	}
+}
+```
+
+### 2.展開について
+
+先程付与したidに対して
+
+ループでYTPlayerを展開します。
+
+ここまでこんな感じです。
+
+```
+<!DOCTYPE html>
+<html>
+<body>
+<div class="player"></div>
+<div class="player"></div>
+
+<script>
+	var NEKOKKE = NEKOKKE || {};
+
+	NEKOKKE.YOUTUBE = {
+		opt : {
+			stopWaitTime : 6000
+		},
+		init : function(){
+			this.setParameters();
+			this.prepare();
+		},
+		setParameters : function(){
+			this.player = null;
+			this.done = false;
+			this.players = document.querySelectorAll('.player');
+		},
+		prepare : function(){
+			this.addAPI();
+			this.setId();
+			this.changePath();
+			window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady;
+		},
+		addAPI : function(){
+			var tag = document.createElement('script');
+			tag.src = "https://www.youtube.com/iframe_api";
+			var firstScriptTag = document.getElementsByTagName('script')[0];
+			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+		},
+		setId : function(){
+			for (var i = 0; i < this.players.length; i++) {
+				this.players[i].id = 'player' + i;
+			}
+		},
+		onYouTubeIframeAPIReady : function(){
+			for (var i = 0; i < this.players.length; i++) {
+				this.player = new YT.Player('player' + i, {
+					height: '360',
+					width: '640',
+					videoId: 'M7lc1UVf-VE',
+					events: {
+						'onReady': this.onPlayerReady,
+						'onStateChange': this.onPlayerStateChange
+					}
+				});
+			}
+		},
+		onPlayerReady : function(event){
+			event.target.playVideo();
+		},
+		onPlayerStateChange : function(event){
+			var _self = this;
+			if (event.data == YT.PlayerState.PLAYING && !this.done) {
+				setTimeout(function(){_self.stopVideo();}, this.opt.stopWaitTime);
+				this.done = true;
+			}
+		},
+		stopVideo : function(){
+			this.player.stopVideo();
+		},
+		changePath : function(){
+			this.onPlayerReady = this.onPlayerReady.bind(this);
+			this.onPlayerStateChange = this.onPlayerStateChange.bind(this);
+			this.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
+		}
+	};
+
+	NEKOKKE.YOUTUBE.init();
+</script>
+</body>
+</html>
+```
+[サンプルはこちら](/sample/youtube/02/after1.html "　")
+
+これで２つに対して展開できます。
+
+ただ、動きが変ですね。
+
+なぜかというとフラグ用のthis.done変数が同じthis.doneを参照しているのと
+
+this.playerに一つのYT.Playerしか入っていないので
+
+挙動がおかしいです。
+
+YT.Playerに関しては配列で管理して
+
+done変数を個別でフラグ持たせたいので
+
+コンストラクタで定義しても良いですが
+
+すでにYT.Playerがnewしているので
+
+この中にフラグを忍ばせましょう。
+
+### 3.this.playerに関して
+
+```
+this.playerContainer = [];
+
+for (var i = 0; i < this.players.length; i++) {
+	this.playerContainer[i] = new YT.Player('player' + i, {
+		height: '360',
+		width: '640',
+		done : false,
+		videoId: 'M7lc1UVf-VE',
+		events: {
+			'onReady': this.onPlayerReady,
+			'onStateChange': this.onPlayerStateChange
+		}
+	});
+}
+```
+
+後で、管理しやすいように配列にしちゃいましょう。
+
+次に
+
+```
+onPlayerStateChange : function(event){
+	var _self = this;
+	if (event.data == YT.PlayerState.PLAYING && !this.done) {
+		setTimeout(function(){_self.stopVideo(event);}, this.opt.stopWaitTime);
+		this.done = true;
+	}
+},
+stopVideo : function(event){
+	event.target.stopVideo();
+}
+```
+
+ここもthis.playerContainerで番号管理して実行より
+
+eventを引数で渡してくるほうが楽なので
+
+そのように変更
+
+### 4.done変数に関して
+
+YT.Playerの身体に
+
+私の作った製造番号とdone変数を埋め込んで行きます。
+
+```
+for (var i = 0; i < this.players.length; i++) {
+	this.playerContainer[i].customOpt = {
+		index : i,
+		done : false
+	};
+}
+```
+これでよし
+
+```
+onPlayerStateChange : function(event){
+	var _self = this;
+	if (event.data == YT.PlayerState.PLAYING && !event.target.customOpt.done) {
+		setTimeout(function(){_self.stopVideo(event);}, this.opt.stopWaitTime);
+		this.playerContainer[event.target.customOpt.index].customOpt.done = true;
+	}
+}
+```
+次に読み取り機能ですね
+
+引数での参照はevent.target.customOpt.doneでできますが
+
+判定後に上書きしなくてはいけないので
+
+```
+this.playerContainer[event.target.customOpt.index].customOpt.done = true;
+```
+
+保存した配列から、仕込んだ製造番号をもとに参照して書き換えてあげます。
+
+これで挙動的には一緒になりました。
+
+```
+<!DOCTYPE html>
+<html>
+<body>
+<div class="player"></div>
+<div class="player"></div>
+
+<script>
+	var NEKOKKE = NEKOKKE || {};
+
+	NEKOKKE.YOUTUBE = {
+		opt : {
+			stopWaitTime : 6000
+		},
+		init : function(){
+			this.setParameters();
+			this.prepare();
+		},
+		setParameters : function(){
+			this.playerContainer = [];
+			this.players = document.querySelectorAll('.player');
+		},
+		prepare : function(){
+			this.addAPI();
+			this.setId();
+			this.changePath();
+			window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady;
+		},
+		addAPI : function(){
+			var tag = document.createElement('script');
+			tag.src = "https://www.youtube.com/iframe_api";
+			var firstScriptTag = document.getElementsByTagName('script')[0];
+			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+		},
+		setId : function(){
+			for (var i = 0; i < this.players.length; i++) {
+				this.players[i].id = 'player' + i;
+			}
+		},
+		onYouTubeIframeAPIReady : function(){
+			for (var i = 0; i < this.players.length; i++) {
+				this.playerContainer[i] = new YT.Player('player' + i, {
+					height: '360',
+					width: '640',
+					done : false,
+					videoId: 'M7lc1UVf-VE',
+					events: {
+						'onReady': this.onPlayerReady,
+						'onStateChange': this.onPlayerStateChange
+					}
+				});
+			}
+			for (var i = 0; i < this.players.length; i++) {
+				this.playerContainer[i].customOpt = {
+					index : i,
+					done : false
+				};
+			}
+		},
+		onPlayerReady : function(event){
+			event.target.playVideo();
+		},
+		onPlayerStateChange : function(event){
+			var _self = this;
+			if (event.data == YT.PlayerState.PLAYING && !event.target.customOpt.done) {
+				setTimeout(function(){_self.stopVideo(event);}, this.opt.stopWaitTime);
+				this.playerContainer[event.target.customOpt.index].customOpt.done = true;
+			}
+		},
+		stopVideo : function(event){
+			event.target.stopVideo();
+		},
+		changePath : function(){
+			this.onPlayerReady = this.onPlayerReady.bind(this);
+			this.onPlayerStateChange = this.onPlayerStateChange.bind(this);
+			this.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
+		}
+	};
+
+	NEKOKKE.YOUTUBE.init();
+</script>
+</body>
+</html>
+```
+
+### 6.あとはvideoIDを外部から変更できるように外付けにしましょう。
+
+```
+<div class="player" data-youtube-id="M7lc1UVf-VE"></div>
+<div class="player" data-youtube-id="7ROwBMBlEWM"></div>
+```
+外付け部分がこんな感じにして
+
+```
+for (var i = 0; i < this.players.length; i++) {
+	this.playerContainer[i] = new YT.Player('player' + i, {
+		height: '360',
+		width: '640',
+		done : false,
+		videoId: this.players[i].getAttribute('data-youtube-id'),
+		events: {
+			'onReady': this.onPlayerReady,
+			'onStateChange': this.onPlayerStateChange
+		}
+	});
+}
+```
+読み取り部分がこんな感じです。
+
+これで一通り複数再生時の処理は完了です。
+
+```
+<!DOCTYPE html>
+<html>
+<body>
+<div class="player" data-youtube-id="M7lc1UVf-VE"></div>
+<div class="player" data-youtube-id="7ROwBMBlEWM"></div>
+
+<script>
+	var NEKOKKE = NEKOKKE || {};
+
+	NEKOKKE.YOUTUBE = {
+		opt : {
+			stopWaitTime : 6000
+		},
+		init : function(){
+			this.setParameters();
+			this.prepare();
+		},
+		setParameters : function(){
+			this.playerContainer = [];
+			this.players = document.querySelectorAll('.player');
+		},
+		prepare : function(){
+			this.addAPI();
+			this.setId();
+			this.changePath();
+			window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady;
+		},
+		addAPI : function(){
+			var tag = document.createElement('script');
+			tag.src = "https://www.youtube.com/iframe_api";
+			var firstScriptTag = document.getElementsByTagName('script')[0];
+			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+		},
+		setId : function(){
+			for (var i = 0; i < this.players.length; i++) {
+				this.players[i].id = 'player' + i;
+			}
+		},
+		onYouTubeIframeAPIReady : function(){
+			for (var i = 0; i < this.players.length; i++) {
+				this.playerContainer[i] = new YT.Player('player' + i, {
+					height: '360',
+					width: '640',
+					done : false,
+					videoId: this.players[i].getAttribute('data-youtube-id'),
+					events: {
+						'onReady': this.onPlayerReady,
+						'onStateChange': this.onPlayerStateChange
+					}
+				});
+			}
+			for (var i = 0; i < this.players.length; i++) {
+				this.playerContainer[i].customOpt = {
+					index : i,
+					done : false
+				};
+			}
+		},
+		onPlayerReady : function(event){
+			event.target.playVideo();
+		},
+		onPlayerStateChange : function(event){
+			var _self = this;
+			if (event.data == YT.PlayerState.PLAYING && !event.target.customOpt.done) {
+				setTimeout(function(){_self.stopVideo(event);}, this.opt.stopWaitTime);
+				this.playerContainer[event.target.customOpt.index].customOpt.done = true;
+			}
+		},
+		stopVideo : function(event){
+			event.target.stopVideo();
+		},
+		changePath : function(){
+			this.onPlayerReady = this.onPlayerReady.bind(this);
+			this.onPlayerStateChange = this.onPlayerStateChange.bind(this);
+			this.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
+		}
+	};
+
+	NEKOKKE.YOUTUBE.init();
+</script>
+</body>
+</html>
+```
+
+[サンプルはこちら](/sample/youtube/02/after2.html "　")
+
+以上になります。
+
+来週はこのサンプルをベースに色々カスタマイズしていきます。
+
+ありがとうございます。
+
+参考（[https://developers.google.com/youtube/iframe_api_reference](https://developers.google.com/youtube/iframe_api_reference "　")）
