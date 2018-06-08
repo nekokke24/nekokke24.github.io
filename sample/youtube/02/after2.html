@@ -63,7 +63,7 @@
 			var _self = this;
 			if (event.data == YT.PlayerState.PLAYING && !event.target.customOpt.done) {
 				setTimeout(function(){_self.stopVideo(event);}, this.opt.stopWaitTime);
-				this.playerContainer[event.target.customOpt.index].customOpt.done = true;
+				event.target.customOpt.done = true;
 			}
 		},
 		stopVideo : function(event){

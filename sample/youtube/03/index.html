@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+<script>
+	var hoge = {
+		hei : 0
+	};
+	function fuga(target) {
+		console.log(target.hei);
+		target.hei = 2;
+		console.log(target.hei);
+	}
+	fuga(hoge);
+	console.log(hoge);
+</script>
+</body>
+</html>

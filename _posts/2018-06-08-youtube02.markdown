@@ -422,6 +422,8 @@ YT.Playerの身体に
 
 私の作った製造番号とdone変数を埋め込んで行きます。
 
+製造番号に関しては、後々何かと便利なので入れます。
+
 ```
 for (var i = 0; i < this.players.length; i++) {
 	this.playerContainer[i].customOpt = {
@@ -443,15 +445,11 @@ onPlayerStateChange : function(event){
 ```
 次に読み取り機能ですね
 
-引数での参照はevent.target.customOpt.doneでできますが
-
-判定後に上書きしなくてはいけないので
-
 ```
-this.playerContainer[event.target.customOpt.index].customOpt.done = true;
+event.target.customOpt.done = true;
 ```
 
-保存した配列から、仕込んだ製造番号をもとに参照して書き換えてあげます。
+ふう
 
 これで挙動的には一緒になりました。
 
@@ -521,7 +519,7 @@ this.playerContainer[event.target.customOpt.index].customOpt.done = true;
 			var _self = this;
 			if (event.data == YT.PlayerState.PLAYING && !event.target.customOpt.done) {
 				setTimeout(function(){_self.stopVideo(event);}, this.opt.stopWaitTime);
-				this.playerContainer[event.target.customOpt.index].customOpt.done = true;
+				event.target.customOpt.done = true;
 			}
 		},
 		stopVideo : function(event){
@@ -632,7 +630,7 @@ for (var i = 0; i < this.players.length; i++) {
 			var _self = this;
 			if (event.data == YT.PlayerState.PLAYING && !event.target.customOpt.done) {
 				setTimeout(function(){_self.stopVideo(event);}, this.opt.stopWaitTime);
-				this.playerContainer[event.target.customOpt.index].customOpt.done = true;
+				event.target.customOpt.done = true;
 			}
 		},
 		stopVideo : function(event){
