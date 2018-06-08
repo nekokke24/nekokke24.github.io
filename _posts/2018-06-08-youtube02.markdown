@@ -250,6 +250,8 @@ setId : function(){
 ```
 その後にidを付与します。
 
+### 2.展開について
+
 ```
 onYouTubeIframeAPIReady : function(){
 	for (var i = 0; i < this.players.length; i++) {
@@ -265,8 +267,6 @@ onYouTubeIframeAPIReady : function(){
 	}
 }
 ```
-
-### 2.展開について
 
 先程付与したidに対して
 
