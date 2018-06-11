@@ -63,22 +63,14 @@
 				this.isPlayNum = event.target.customOpt.index;
 				event.target.playVideo();
 			} else {
-				this.VIDEO_QUEUE.push(event.target.customOpt.index);
+				this.VIDEO_QUEUE.push = event.target.customOpt.index;
 			}
 		},
 		onPlayerStateChange : function(event){
 			var _self = this;
-			if (event.data === YT.PlayerState.PLAYING && !event.target.customOpt.done) {
+			if (event.data == YT.PlayerState.PLAYING && !event.target.customOpt.done) {
 				setTimeout(function(){_self.stopVideo(event);}, this.opt.stopWaitTime);
 				event.target.customOpt.done = true;
-			}
-			
-			if(event.data === YT.PlayerState.PAUSED){
-				this.VIDEO_QUEUE.push(event.target.customOpt.index);
-				if(this.VIDEO_QUEUE.length !== 0){
-					var playIndex = this.VIDEO_QUEUE.shift();
-					this.playerContainer[playIndex].playVideo();
-				}
 			}
 		},
 		stopVideo : function(event){

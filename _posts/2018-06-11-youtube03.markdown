@@ -1,0 +1,342 @@
+---
+layout: post
+title: 複数動画を交互に再生する　其の壱（ youtubeAPI 応用編① ）
+date: 2018-06-11 00:00:00 +0900
+description: 複数動画を交互に再生する　其の壱（ youtubeAPI 応用編① 
+img: thumbnail-180611.png
+tags: [Js]
+---
+<style>
+	* {
+		word-break: break-all;
+	}
+</style>
+
+## 前段として
+
+先日、カフェにいたら
+
+隣にきた女性が
+
+タイピングがものすごく五月蝿くて迷惑でした。
+
+タブレットPCでキーがバッキバキのテッカテカで
+
+指がキーを貫通するんじゃないか？っていうくらい力強いタイピングでした。
+
+普段、マイクロソフトは好きな方ではないのですが
+
+あれをみたら流石にSurfaceに同情しました。
+
+それでもプライベートで無駄な戦いは避けたかったので帰りましたが
+
+どんなに格好良くてもどんなに早くても
+
+人に迷惑かけるのは良くないと普通に勉強になりました。
+
+また、1つ大人になりました。
+
+ありがとう。
+
+## youtubeAPI 応用編① -動画を片方ずつ再生する-
+
+前回のサンプルでは
+
+youtubeAPIが提供しているサンプルをベースにやっていたため
+
+2つの動画が同時に再生されていましたが
+
+通常では2つの動画を同時に再生することは無いでしょう。
+
+なので今回は交互に再生する。方法で実装します。
+
+前回か前々回の話でも言いましたが
+
+動画の再生準備などの状態変化を正確にとれるのはYT.Playerのeventです。
+
+なのでこのイベントを中心に動画をコントロールします。
+
+### 1.onReady（動画の準備ができた時）
+
+まず複数の動画をコントロールするにあたり
+
+共通のフラグが必要です。なので
+
+フラグは真偽値でも良いですが
+
+何番目の動画が再生されているかどうかの判定も含んじゃいましょう。
+
+なので
+
+```
+-1	再生されていない
+0	1番目の動画が再生されている
+...
+```
+で判定したいと思います。
+
+```
+setParameters : function(){
+	...
+	this.isPlayNum = -1;
+}
+```
+
+この共通フラグを用いて
+
+動画の再生準備ができたら
+
+このフラグに再生されている番号を打ち込む（もちろん初期は再生されていないので-1で初期定義します。）
+
+↓
+
+- -1以外であれば、すでに何かしらの動画が再生されている
+- -1であれば、何も再生されていない。
+
+ので
+
+-1じゃないと初期動画は再生しない
+
+というロジックであれば
+
+ほぼ同時だとしても
+
+先に準備完了になった動画のみ再生され
+
+後続の動画は再生されないようにできます。
+
+![1.png](/assets/img/youtube03/1.png)
+
+コードだとこんな感じです。
+```
+onPlayerReady : function(event){
+	if(this.isPlayNum === -1){
+		this.isPlayNum = event.target.customOpt.index;
+		event.target.playVideo();
+	}
+}
+```
+
+ただこのままだと
+
+2つ目の動画がそのままになってしまうので
+
+交互に再生するために
+
+ここで次の動画の予約ができる仕組みを作成します。
+
+ここで予約機能用の配列を作成します。
+
+```
+setParameters : function(){
+	...
+	this.VIDEO_QUEUE = [];
+}
+```
+
+2つめの動画はキューに登録して次の再生を待ちます。
+
+```
+onPlayerReady : function(event){
+	if(this.isPlayNum === -1){
+		this.isPlayNum = event.target.customOpt.index;
+		event.target.playVideo();
+	} else {
+		this.VIDEO_QUEUE.push = event.target.customOpt.index;
+	}
+}
+```
+
+次は再生部分です。
+
+[サンプルはこちら](/sample/youtube/03/index1.html "　")
+
+### 2.onStateChange（動画のステータスが変更された時）
+
+動画のステータスが変更された時
+
+前々回にも説明しましたが
+
+動画の状態には以下の5つのステータスがあります。
+
+|-|-|-|
+| -1 | 未開始 | なし |
+| 0 | 終了 | YT.PlayerState.ENDED |
+| 1 | 再生中 | YT.PlayerState.PLAYING |
+| 2 | 停止 | YT.PlayerState.PAUSED |
+| 3 | バッファリング中 | YT.PlayerState.BUFFERING |
+| 5 | 頭出し済み | YT.PlayerState.CUED |
+
+これは再生が終了する以外にも
+
+この状態が切り替わったタイミングで発火するので
+
+onStateChangeは発火しまくるということです。
+
+通常自動再生した場合はどのような状態変化があるのでしょうか
+
+onStateChange内部に
+
+```
+console.log(event.target.customOpt.index,event.data);
+```
+
+こいつを仕込んで見てみると
+
+まず
+
+```
+1.playVideo();しない限りonStateChangeは発火しない
+→onReady内で何かしらの指示を与えない限り、状態変化はしない。
+
+2.再生に関しては、-1(未開始) → 3(バッファリング中) → 1(再生中)
+
+3.6秒後の停止に関しては、2(停止) → -1(未開始) → 5(頭出し済み)
+```
+
+でした。
+
+なので、動画が停止したタイミングで引っ掛けましょう。
+
+ステータスは2(停止)に引っ掛けます。
+
+```
+onPlayerStateChange : function(event){
+	...
+	if(event.data === YT.PlayerState.PAUSED){
+		this.VIDEO_QUEUE.push(event.target.customOpt.index);
+		if(this.VIDEO_QUEUE.length !== 0){
+			var playIndex = this.VIDEO_QUEUE.shift();
+			this.playerContainer[playIndex].playVideo();
+		}
+	}
+}
+```
+
+停止状態の時に
+
+1.まず次の動画の予約をします。
+
+2.キューを見て配列が存在していたら、配列から番号を取り出して、その番号のビデオを再生
+
+これで交互の再生ができます。
+
+ここまでだとこんな感じです。
+
+```
+<!DOCTYPE html>
+<html>
+<body>
+<div class="player" data-youtube-id="M7lc1UVf-VE"></div>
+<div class="player" data-youtube-id="7ROwBMBlEWM"></div>
+
+<script>
+	var NEKOKKE = NEKOKKE || {};
+
+	NEKOKKE.YOUTUBE = {
+		opt : {
+			stopWaitTime : 6000
+		},
+		init : function(){
+			this.setParameters();
+			this.prepare();
+		},
+		setParameters : function(){
+			this.playerContainer = [];
+			this.playerSelectors = document.querySelectorAll('.player');
+			this.isPlayNum = -1;
+			this.VIDEO_QUEUE = [];
+		},
+		prepare : function(){
+			this.addAPI();
+			this.setId();
+			this.changePath();
+			window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady;
+		},
+		addAPI : function(){
+			var tag = document.createElement('script');
+			tag.src = "https://www.youtube.com/iframe_api";
+			var firstScriptTag = document.getElementsByTagName('script')[0];
+			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+		},
+		setId : function(){
+			for (var i = 0; i < this.playerSelectors.length; i++) {
+				this.playerSelectors[i].id = 'player' + i;
+			}
+		},
+		onYouTubeIframeAPIReady : function(){
+			for (var i = 0; i < this.playerSelectors.length; i++) {
+				this.playerContainer[i] = new YT.Player('player' + i, {
+					height: '360',
+					width: '640',
+					done : false,
+					videoId: this.playerSelectors[i].getAttribute('data-youtube-id'),
+					events: {
+						'onReady': this.onPlayerReady,
+						'onStateChange': this.onPlayerStateChange
+					}
+				});
+			}
+			for (var i = 0; i < this.playerSelectors.length; i++) {
+				this.playerContainer[i].customOpt = {
+					index : i,
+					done : false
+				};
+			}
+		},
+		onPlayerReady : function(event){
+			if(this.isPlayNum === -1){
+				this.isPlayNum = event.target.customOpt.index;
+				event.target.playVideo();
+			} else {
+				this.VIDEO_QUEUE.push(event.target.customOpt.index);
+			}
+		},
+		onPlayerStateChange : function(event){
+			var _self = this;
+			if (event.data === YT.PlayerState.PLAYING && !event.target.customOpt.done) {
+				setTimeout(function(){_self.stopVideo(event);}, this.opt.stopWaitTime);
+				event.target.customOpt.done = true;
+			}
+			
+			if(event.data === YT.PlayerState.PAUSED){
+				this.VIDEO_QUEUE.push(event.target.customOpt.index);
+				if(this.VIDEO_QUEUE.length !== 0){
+					var playIndex = this.VIDEO_QUEUE.shift();
+					this.playerContainer[playIndex].playVideo();
+				}
+			}
+		},
+		stopVideo : function(event){
+			event.target.stopVideo();
+		},
+		changePath : function(){
+			this.onPlayerReady = this.onPlayerReady.bind(this);
+			this.onPlayerStateChange = this.onPlayerStateChange.bind(this);
+			this.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
+		}
+	};
+
+	NEKOKKE.YOUTUBE.init();
+</script>
+</body>
+</html>
+```
+
+[サンプルはこちら](/sample/youtube/03/index.html "　")
+
+ただ、これだとまだ挙動が安定しないです。
+
+なぜなら、ユーザーが再生ボタンを連打した時などの
+
+想定外の操作に対して対策ができていないからです。
+
+今回は少し早いですがここで切り上げます。
+
+次回はその対応をします。
+
+以上になります。
+
+ありがとうございます。
+
+参考（[https://developers.google.com/youtube/iframe_api_reference](https://developers.google.com/youtube/iframe_api_reference "　")）
