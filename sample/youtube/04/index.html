@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div class="player" data-youtube-id="7ROwBMBlEWM"></div>
+<div class="player" data-youtube-id="7ROwBMBlEWM"></div>
+
+<script>
+	var NEKOKKE = NEKOKKE || {};
+
+	NEKOKKE.YOUTUBE = {
+		opt : {
+			stopWaitTime : 6000
+		},
+		init : function(){
+			this.setParameters();
+			this.prepare();
+		},
+		setParameters : function(){
+			this.playerContainer = [];
+			this.playerSelectors = document.querySelectorAll('.player');
+			this.isPlayNum = -1;
+			this.VIDEO_QUEUE = [];
+		},
+		prepare : function(){
+			this.addAPI();
+			this.setId();
+			this.changePath();
+			window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady;
+		},
+		addAPI : function(){
+			var tag = document.createElement('script');
+			tag.src = "https://www.youtube.com/iframe_api";
+			var firstScriptTag = document.getElementsByTagName('script')[0];
+			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+		},
+		setId : function(){
+			for (var i = 0; i < this.playerSelectors.length; i++) {
+				this.playerSelectors[i].id = 'player' + i;
+			}
+		},
+		onYouTubeIframeAPIReady : function(){
+			for (var i = 0; i < this.playerSelectors.length; i++) {
+				this.playerContainer[i] = new YT.Player('player' + i, {
+					height: '360',
+					width: '640',
+					done : false,
+					videoId: this.playerSelectors[i].getAttribute('data-youtube-id'),
+					events: {
+						'onReady': this.onPlayerReady,
+						'onStateChange': this.onPlayerStateChange
+					}
+				});
+			}
+			for (var i = 0; i < this.playerSelectors.length; i++) {
+				this.playerContainer[i].customOpt = {
+					index : i
+				};
+			}
+		},
+		onPlayerReady : function(event){
+
+			event.target.mute();
+
+			if(this.isPlayNum === -1){
+				this.isPlayNum = event.target.customOpt.index;
+
+				event.target.playVideo();
+			} else {
+				this.VIDEO_QUEUE.push(event.target.customOpt.index);
+			}
+		},
+		onPlayerStateChange : function(event){
+			if(event.data === YT.PlayerState.ENDED){
+				// 終了
+
+					// 4.自動再生が終了した時
+					this.addVideoQueue(event);
+					this.rePlayOtherVideo();
+			} else if(event.data === YT.PlayerState.PLAYING){
+				// 再生
+					
+					// 1.ユーザーの操作で既に停止されている動画を再生した時
+					if(event.target.customOpt.index !== this.isPlayNum) {
+						this.playerContainer[this.isPlayNum].stopVideo();
+					}
+					
+					// 共通処理
+					this.isPlayNum = event.target.customOpt.index;
+			} else if(event.data === YT.PlayerState.PAUSED){
+				// 停止
+					
+					// 2.ユーザーの操作で既に再生されている動画を停止した時
+					this.addVideoQueue(event);
+					this.rePlayOtherVideo();
+			}
+			console.log(event.target.customOpt.index,event.data,this.VIDEO_QUEUE,this.isPlayNum);
+		},
+		rePlayOtherVideo : function(){
+			if(this.VIDEO_QUEUE.length !== 0){
+				var playIndex = this.VIDEO_QUEUE.shift();
+
+				this.playerContainer[playIndex].playVideo();
+			}
+		},
+		addVideoQueue : function(event){
+			this.VIDEO_QUEUE.push(event.target.customOpt.index);
+		},
+		changePath : function(){
+			this.onPlayerReady = this.onPlayerReady.bind(this);
+			this.onPlayerStateChange = this.onPlayerStateChange.bind(this);
+			this.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
+		}
+	};
+
+	NEKOKKE.YOUTUBE.init();
+</script>
+</body>
+</html>
