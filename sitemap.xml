@@ -1,62 +1,122 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset
-        xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-  <!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
 
 
-  <url>
-    <loc>https://nekokke24.github.io/</loc>
-    <lastmod>2018-06-06T02:50:40+00:00</lastmod>
-    <priority>1.00</priority>
-  </url>
-  <url>
-    <loc>https://nekokke24.github.io/youtube01/</loc>
-    <lastmod>2018-06-06T02:50:40+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://nekokke24.github.io/tips/</loc>
-    <lastmod>2018-06-06T02:50:40+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://nekokke24.github.io/animation/</loc>
-    <lastmod>2018-06-06T02:50:40+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://nekokke24.github.io/yoko-flex/</loc>
-    <lastmod>2018-06-06T02:50:40+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://nekokke24.github.io/yoko/</loc>
-    <lastmod>2018-06-06T02:50:40+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://nekokke24.github.io/webfont-speed/</loc>
-    <lastmod>2018-06-06T02:50:40+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://nekokke24.github.io/hoz-center/</loc>
-    <lastmod>2018-06-06T02:50:40+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://nekokke24.github.io/clearfix/</loc>
-    <lastmod>2018-06-06T02:50:40+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
-  <url>
-    <loc>https://nekokke24.github.io/sample/youtube/01/</loc>
-    <lastmod>2018-06-06T02:50:35+00:00</lastmod>
-    <priority>0.64</priority>
-  </url>
+<url>
+  <loc>http://nekokke.tech/</loc>
+  <lastmod>2018-06-13T03:20:49+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/youtube04/</loc>
+  <lastmod>2018-06-13T03:20:49+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/youtube03/</loc>
+  <lastmod>2018-06-13T03:20:49+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/youtube02/</loc>
+  <lastmod>2018-06-13T03:20:49+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/youtube01/</loc>
+  <lastmod>2018-06-13T03:20:49+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/tips/</loc>
+  <lastmod>2018-06-13T03:20:49+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/animation/</loc>
+  <lastmod>2018-06-13T03:20:49+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/yoko-flex/</loc>
+  <lastmod>2018-06-13T03:20:49+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/yoko/</loc>
+  <lastmod>2018-06-13T03:20:49+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/page/2/</loc>
+  <lastmod>2018-06-13T03:20:49+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/sample/youtube/03/index.html</loc>
+  <lastmod>2018-06-13T03:20:44+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/sample/youtube/04/index1.html</loc>
+  <lastmod>2018-06-13T03:20:44+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/sample/youtube/04/</loc>
+  <lastmod>2018-06-13T03:20:44+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/tags/</loc>
+  <lastmod>2018-06-13T03:20:49+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/sample/youtube/03/index1.html</loc>
+  <lastmod>2018-06-13T03:20:44+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/sample/youtube/02/before.html</loc>
+  <lastmod>2018-06-13T03:20:44+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/sample/youtube/02/after1.html</loc>
+  <lastmod>2018-06-13T03:20:44+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/sample/youtube/02/after2.html</loc>
+  <lastmod>2018-06-13T03:20:44+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/sample/youtube/01/</loc>
+  <lastmod>2018-06-13T03:20:44+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/webfont-speed/</loc>
+  <lastmod>2018-06-13T03:20:49+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/hoz-center/</loc>
+  <lastmod>2018-06-13T03:20:49+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>http://nekokke.tech/clearfix/</loc>
+  <lastmod>2018-06-13T03:20:49+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
 
 
 </urlset>
