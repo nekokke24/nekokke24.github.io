@@ -1,4 +1,4 @@
 User-Agent:*
 Disallow:/tags/
 
-Sitemap:https://nekokke24.github.io/sitemap.xml
+Sitemap:http://nekokke.tech/sitemap.xml
