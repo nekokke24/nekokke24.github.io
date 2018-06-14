@@ -1,0 +1,146 @@
+---
+layout: post
+title: 道具について
+date: 2018-06-14 00:00:00 +0900
+description: 道具について
+img: thumbnail-180614.png
+tags: [Etc]
+---
+<style>
+	* {
+		word-break: break-all;
+	}
+</style>
+
+## 前段として
+
+今日は自分の道具周り、主にハードウェア周りについて書こうと思います。
+
+あまり、2,3年前から変わっていないですが
+
+おすすめです。
+
+画像を添付できなかったので
+
+最後にamazonからflash製のウィジェットを入れ込んでます。
+
+## キーボード
+
+### Happy Hacking Keyboard Professional2 Type-S
+
+[→amazon](https://www.amazon.co.jp/PFU-Hacking-Keyboard-Professional2-PD-KB400WNS/dp/B008GXT6SK/ref=sr_1_2?ie=UTF8&qid=1528942920&sr=8-2&keywords=Happy+Hacking+Keyboard+Professional2+Type-S){:target="_blank"}
+
+
+これも3年前くらいからずっと使ってます。
+
+無刻印であることとキーの数が一番少ないのが好きなので
+
+その中でもこのキーボードはタイピングの感触が良いので使っています。
+
+後は特に理由はないです。
+
+3年間、ガンガンタイピングしてもまだ壊れていないので
+
+結構長持ちします。
+
+お金のない時は下のやつを使ってました。
+
+### FILCO Majestouch MINILA US67キー 青軸 FFKB67MC/EB
+
+[→amazon](https://www.amazon.co.jp/FILCO-Majestouch-MINILA-US67%E3%82%AD%E3%83%BC-FFKB67MC/dp/B00BG0ZR6K/ref=sr_1_1?ie=UTF8&qid=1528943410&sr=8-1&keywords=Majestouch+MINILA+US67%E3%82%AD%E3%83%BC+%E9%9D%92%E8%BB%B8){:target="_blank"}
+
+これを無刻印に改造して使ってました。
+
+これは結構、音がうるさいので
+
+周りからクレームはきやすいですね。
+
+それでも、タイピング時のカチカチ音はクセになりますね。
+
+## マウス
+
+### Logicool ロジクール ワイヤレス トラックボール MX ERGO
+
+[→amazon](https://www.amazon.co.jp/Logicool-%E3%83%AD%E3%82%B8%E3%82%AF%E3%83%BC%E3%83%AB-MXTB1s-bluetooth-%E3%83%88%E3%83%A9%E3%83%83%E3%82%AF%E3%83%9C%E3%83%BC%E3%83%AB/dp/B074Z71C2M/ref=sr_1_sc_1_m?s=computers&ie=UTF8&qid=1528943568&sr=1-1-spell&keywords=logicool+track+ball){:target="_blank"}
+
+まず、このトラックボールというマウスは革命的ですね。
+
+このマウスを使ってから肩こりがなくなりました。
+
+動かすのは基本的に親指だけなので
+
+最初は慣れるのに大変ですが
+
+慣れたら非常に使いやすいです。
+
+### Logicool ロジクール ワイヤレストラックボール M570t
+
+[→amazon](https://www.amazon.co.jp/%E3%83%AD%E3%82%B8%E3%82%AF%E3%83%BC%E3%83%AB-M570t-LOGICOOL-%E3%83%AF%E3%82%A4%E3%83%A4%E3%83%AC%E3%82%B9%E3%83%88%E3%83%A9%E3%83%83%E3%82%AF%E3%83%9C%E3%83%BC%E3%83%AB/dp/B00E19UYO8/ref=sr_1_1?s=computers&ie=UTF8&qid=1528943568&sr=1-1&keywords=logicool+track+ball){:target="_blank"}
+
+こちらは上の廉価版みたいなものです。
+
+何個も持っていて
+
+電子機器に弱い嫁が「なに？あの王蟲みたいやつ」と
+
+以来、家では王蟲と呼ばれてます。
+
+## ディスプレイ
+
+### Apple Thunderbolt Display
+
+[→wiki](https://ja.wikipedia.org/wiki/Apple_Thunderbolt_Display){:target="_blank"}
+
+生産終了しているのでamazonのリンクが貼れないのですが
+
+とても重宝しています。
+
+
+## 他
+
+### ロートアイストレッチコンタクト 12mL
+
+[→amazon](https://www.amazon.co.jp/%E3%83%AD%E3%83%BC%E3%83%88%E7%9B%AE%E8%96%AC-%E3%80%90%E7%AC%AC3%E9%A1%9E%E5%8C%BB%E8%96%AC%E5%93%81%E3%80%91%E3%83%AD%E3%83%BC%E3%83%88%E3%82%A2%E3%82%A4%E3%82%B9%E3%83%88%E3%83%AC%E3%83%83%E3%83%81%E3%82%B3%E3%83%B3%E3%82%BF%E3%82%AF%E3%83%88-12mL/dp/B0055PT3I0/ref=sr_1_2?s=hpc&ie=UTF8&qid=1528944336&sr=1-2&keywords=%E3%82%A2%E3%82%A4%E3%82%B9%E3%83%88%E3%83%AC%E3%83%83%E3%83%81){:target="_blank"}
+
+パソコン仕事なので目薬は必要ですね。
+
+その中でも、これはすごく効いている感があります。
+
+どんな薬品ぶっかけたら目の筋肉がほぐれるのかはわかりませんが
+
+目薬はこれ以外使ってないですね。
+
+### Jelly Comb ノートパソコンスタンド
+
+[→amazon](https://www.amazon.co.jp/%E3%83%8E%E3%83%BC%E3%83%88%E3%83%91%E3%82%BD%E3%82%B3%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%89-%E3%82%AF%E3%83%A9%E3%83%A0%E3%82%B7%E3%82%A7%E3%83%AB-MacBook-laptop-%E3%82%BF%E3%83%96%E3%83%AC%E3%83%83%E3%83%88%E9%81%A9%E7%94%A8/dp/B01M2ZNI60){:target="_blank"}
+
+机の上でノートPCが幅を取るのが嫌いなので
+
+基本縦置きにしてます。
+
+メーカーによるこだわりはありませんが
+
+これで満足しています。
+
+### コルゲンコーワIB透明カプセルα 30カプセル
+
+[→amazon](https://www.amazon.co.jp/%E3%82%B3%E3%83%AB%E3%82%B2%E3%83%B3-%E3%80%90%E6%8C%87%E5%AE%9A%E7%AC%AC2%E9%A1%9E%E5%8C%BB%E8%96%AC%E5%93%81%E3%80%91%E3%82%B3%E3%83%AB%E3%82%B2%E3%83%B3%E3%82%B3%E3%83%BC%E3%83%AFIB%E9%80%8F%E6%98%8E%E3%82%AB%E3%83%97%E3%82%BB%E3%83%AB%CE%B1-30%E3%82%AB%E3%83%97%E3%82%BB%E3%83%AB-%E2%80%BB%E3%82%BB%E3%83%AB%E3%83%95%E3%83%A1%E3%83%87%E3%82%A3%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E7%A8%8E%E5%88%B6%E5%AF%BE%E8%B1%A1%E5%95%86%E5%93%81/dp/B00MA6JW60/ref=sr_1_2?s=hpc&ie=UTF8&qid=1528944854&sr=1-2&keywords=%E3%82%B3%E3%83%AB%E3%82%B2%E3%83%B3){:target="_blank"}
+
+例え、熱が出ていても会社に行かないと行けないのが大人()ですよね。
+
+こいつは風邪薬の中でも即効性が強くて
+
+こいつをキメとくと、どんなに熱があっても
+
+ガンガン仕事が捗るという代物です。
+
+地獄のお供にどうぞ。
+
+以上になります。
+
+## まとめ
+
+<SCRIPT charset="utf-8" type="text/javascript" src="//ws-fe.amazon-adsystem.com/widgets/q?rt=tf_ssw&ServiceVersion=20070822&MarketPlace=JP&ID=V20070822%2FJP%2Fwidgetsamazon-22%2F8003%2Fbb5c72c3-f549-429d-85ce-0a632f25bfcc&Operation=GetScriptTemplate"> </SCRIPT> <NOSCRIPT><A rel="nofollow" HREF="//ws-fe.amazon-adsystem.com/widgets/q?rt=tf_ssw&ServiceVersion=20070822&MarketPlace=JP&ID=V20070822%2FJP%2Fwidgetsamazon-22%2F8003%2Fbb5c72c3-f549-429d-85ce-0a632f25bfcc&Operation=NoScript">Amazon.co.jp ウィジェット</A></NOSCRIPT>
+
+ありがとうございます。
+
