@@ -149,7 +149,7 @@ onPlayerReady : function(event){
 
 次は再生部分です。
 
-[サンプルはこちら](/sample/youtube/03/index1.html "　")
+[サンプルはこちら](/sample/youtube/03/index1.html "　"){:target="_blank"}
 
 ### 2.onStateChange（動画のステータスが変更された時）
 
@@ -323,7 +323,7 @@ onPlayerStateChange : function(event){
 </html>
 ```
 
-[サンプルはこちら](/sample/youtube/03/index.html "　")
+[サンプルはこちら](/sample/youtube/03/index.html "　"){:target="_blank"}
 
 ただ、これだとまだ挙動が安定しないです。
 

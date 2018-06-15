@@ -219,7 +219,7 @@ apiが読み込まれた時点でwindowオブジェクト直下に生成され�
 
 一旦、こちらをベースにやっていきたいです。
 
-[サンプルはこちら](/sample/youtube/02/before.html "　")
+[サンプルはこちら](/sample/youtube/02/before.html "　"){:target="_blank"}
 
 
 ## youtubeAPI 基本編② -複数動画の再生-
@@ -381,7 +381,7 @@ onYouTubeIframeAPIReady : function(){
 </body>
 </html>
 ```
-[サンプルはこちら](/sample/youtube/02/after1.html "　")
+[サンプルはこちら](/sample/youtube/02/after1.html "　"){:target="_blank"}
 
 これで２つに対して展開できます。
 
@@ -716,7 +716,7 @@ for (var i = 0; i < this.players.length; i++) {
 </html>
 ```
 
-[サンプルはこちら](/sample/youtube/02/after2.html "　")
+[サンプルはこちら](/sample/youtube/02/after2.html "　"){:target="_blank"}
 
 以上になります。
 

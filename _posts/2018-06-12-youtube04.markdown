@@ -38,7 +38,7 @@ tags: [Js]
 
 ありがto！
 
-[サンプルはこちら](/sample/youtube/03/index.html "　")
+[サンプルはこちら](/sample/youtube/03/index.html "　"){:target="_blank"}
 
 ### 調査
 
@@ -164,7 +164,7 @@ addVideoQueue : function(event){
 
 正しい挙動になりました。
 
-[サンプルはこちら](/sample/youtube/04/index1.html "　")
+[サンプルはこちら](/sample/youtube/04/index1.html "　"){:target="_blank"}
 
 ### ■1.停止されている動画の再生
 
@@ -348,7 +348,7 @@ onPlayerStateChange : function(event){
 </html>
 ```
 
-[サンプルはこちら](/sample/youtube/04/ "　")
+[サンプルはこちら](/sample/youtube/04/ "　"){:target="_blank"}
 
 以上になります。
 

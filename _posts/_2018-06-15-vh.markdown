@@ -1,0 +1,150 @@
+---
+layout: post
+title: 100vhじゃあ通用しない
+date: 2018-06-15 00:00:00 +0900
+description: 100vhじゃあ通用しない
+img: thumbnail-180614.png
+tags: [css]
+---
+<style>
+	* {
+		word-break: break-all;
+	}
+</style>
+
+## 前段として
+
+少し前にiphoneXが出てきて
+
+「あのUIはサイテーだよ」「デザイン泣かせ」などと
+
+よく聞きましたが、私としてはどちらでも良いですし
+
+例え、appleがトチ狂って
+
+次回のiphoneの画面のほぼ半分が真っ黒だったとしても
+
+その中で情報を展開すればいいだけの話かなと思いました。
+
+ソフトという時点でハードの制約から逃れられませんし
+
+ウェブという時点でブラウザの制約からは逃れられません。
+
+もしそこに改善があるのであれば
+
+その上流工程にコミットすれば良いということですね。
+
+今日はそんなiphoneXに100vhを仕掛けた時の奮闘記から
+
+学んだ事を共有したいと思います。
+
+よろしくおねがいします。
+
+## 画面フィットの仕方
+
+もし、あなたが
+
+キービジュアルを画面いっぱいに展開したい時に
+
+どのような方法がありますか？
+
+私は3つのアイディアを持っています。
+
+### 1.CSSで行う① height 100% の継承
+
+#### HTML
+```
+<div class="kv">kv area</div>
+<div>next section</div>
+```
+
+#### CSS
+```
+html,body {
+	height: 100%;
+}
+.kv {
+	height: 100%;
+}
+```
+
+[サンプルはこちら](/sample/vh/index1.html "　"){:target="_blank"}
+
+100vhがなかった時代はよく使っていた手法ですね
+
+この100%というのは必ずブラウザの内部エリアになりますので
+
+iphoneなどのURLバーなどは無視されます。
+
+### 2.CSSで行う② height 100vh
+
+#### HTML
+```
+<div class="kv">kv area</div>
+<div>next section</div>
+```
+
+#### CSS
+```
+.kv {
+	height: 100vh;
+}
+```
+
+最近では、よく使われていますね。
+
+継承しなくていいので
+
+html,body,その他のDOM要素が入れ子構造になったとしても
+
+展開できるのが便利な部分です。
+
+### 3.jsでゴリゴリラ
+
+#### HTML
+```
+<body>
+	<div class="kv">kv area</div>
+	<div>next section</div>
+</body>
+```
+
+#### JS
+```
+var NEKOKKE = NEKOKKE || {};
+NEKOKKE.VIEW_HEIGHT = {
+	init : function(){
+		this.setParameters();
+		this.setKvHeight();
+		this.bind();
+	},
+	setParameters : function(){
+		this.$window = $(window);
+		this.$target = $('.kv');
+	},
+	bind : function(){
+		var _self = this;
+		this.$window.on('resize',function(){
+			_self.setKvHeight();
+		});
+	},
+	setKvHeight : function(){
+		this.$target.css('height',this.$window.height());
+	}
+};
+$(function(){
+	NEKOKKE.VIEW_HEIGHT.init();
+});
+```
+
+
+
+一般的にはここの調整に関して
+
+わざわざJSを使うレベルではありません。
+
+ですが、今まではCSSで対応できていた部分が
+
+iphoneX
+
+## 遊星からの物体X

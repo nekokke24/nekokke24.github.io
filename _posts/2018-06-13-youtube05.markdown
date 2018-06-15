@@ -30,7 +30,7 @@ tags: [Js]
 
 前回のサンプルがこちら
 
-[サンプルはこちら](/sample/youtube/04/ "　")
+[サンプルはこちら](/sample/youtube/04/ "　"){:target="_blank"}
 
 ```
 <!DOCTYPE html>
@@ -452,7 +452,7 @@ if(event.data === YT.PlayerState.ENDED){
 </html>
 ```
 
-[サンプルはこちら](/sample/youtube/05/ "　")
+[サンプルはこちら](/sample/youtube/05/ "　"){:target="_blank"}
 
 以上になります。
 

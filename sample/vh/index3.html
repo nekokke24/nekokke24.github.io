@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>Document</title>
+	<style>body { margin: 0; } .kv { background-color: rgb(206, 136, 123); }</style>
+</head>
+<body>
+	<div class="kv">kv area</div>
+	<div>next section</div>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script>
+		var NEKOKKE = NEKOKKE || {};
+		NEKOKKE.VIEW_HEIGHT = {
+			init : function(){
+				this.setParameters();
+				this.setKvHeight();
+				this.bind();
+			},
+			setParameters : function(){
+				this.$window = $(window);
+				this.$target = $('.kv');
+			},
+			bind : function(){
+				var _self = this;
+				this.$window.on('resize',function(){
+					_self.setKvHeight();
+				});
+			},
+			setKvHeight : function(){
+				this.$target.css('height',this.$window.height());
+			}
+		};
+		$(function(){
+			NEKOKKE.VIEW_HEIGHT.init();
+		});
+	</script>
+</body>
+</html>

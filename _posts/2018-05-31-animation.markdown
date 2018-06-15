@@ -274,7 +274,7 @@ ease-inになります。
 
 こことかは良く使ってました。
 
-[https://daneden.github.io/animate.css/](https://daneden.github.io/animate.css/ "https://daneden.github.io/animate.css/")
+[https://daneden.github.io/animate.css/](https://daneden.github.io/animate.css/ "https://daneden.github.io/animate.css/"){:target="_blank"}
 
 簡易的なアニメーションを作るのに最適ですね。
 
@@ -284,7 +284,7 @@ ease-inになります。
 
 特にcubic-bezierは細かい調整ができるので多様します。
 
-[http://cubic-bezier.com/](http://cubic-bezier.com/ "http://cubic-bezier.com/")
+[http://cubic-bezier.com/](http://cubic-bezier.com/ "http://cubic-bezier.com/"){:target="_blank"}
 
 このサイトで変化を決めてから
 
@@ -294,11 +294,11 @@ ease-inになります。
 
 昔から使ってるところで言うと
 
-[http://velocityjs.org/](http://velocityjs.org/ "http://velocityjs.org/")
+[http://velocityjs.org/](http://velocityjs.org/ "http://velocityjs.org/"){:target="_blank"}
 
 最近使って良かったと思ったところで言うと
 
-[http://animejs.com/](http://animejs.com/ "http://animejs.com/")
+[http://animejs.com/](http://animejs.com/ "http://animejs.com/"){:target="_blank"}
 
 良かった点はアニメーションを一つのタイムラインで考えられるところと
 
