@@ -27,6 +27,17 @@
 	width: 100%;
 }
 
+footer .copyright {
+	border-top: solid 1px #ccc;
+}
+.about p,
+.request {
+	font-size: 14px;
+}
+footer .copyright {
+	font-size: 12px;
+}
+
 @media only screen and (max-width: 768px) {
 	.content-box {
 		padding: 20px 10px;
@@ -45,5 +56,8 @@
 	}
 	.post .post-content .post-title a {
 		display: block;
+	}
+	.request {
+		display: none;
 	}
 }
