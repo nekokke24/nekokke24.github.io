@@ -81,5 +81,17 @@
 		とかくに人の世は住みにくい。
 		どこへ越しても住みにくいと悟った時、詩が生れて、画が出来る。意地を通せば窮屈だ。山路を登りながら、こう考えた。智に働けば角が立つ。どこへ越しても住みにくいと悟った時、詩が生れて、画が出来る。智に働けば角が立つ。
 	</div>
+	<a href="#" class="jsc-page-top">page top</a>
 </body>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+	$(function(){
+		$('.jsc-page-top').on('click',function(e){
+			e.preventDefault();
+			$('html,body').animate({
+				'scrollTop':0
+			},5000);
+		});
+	});
+</script>
 </html>

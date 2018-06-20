@@ -1,8 +1,8 @@
 ---
 layout: post
-title: 100vhじゃあ通用しない
-date: 2018-06-15 00:00:00 +0900
-description: 100vhじゃあ通用しない
+title: アドレスバー奮闘記
+date: 2018-06-20 00:00:00 +0900
+description: アドレスバー奮闘記
 img: thumbnail-180614.png
 tags: [css]
 ---
