@@ -1,0 +1,36 @@
+---
+layout: post
+title: 簡単にwebサイトで使用されていないCSSを探す方法
+date: 2018-06-20 00:00:00 +0900
+description: 簡単にwebサイトで使用されていないCSSを探す方法
+img: thumbnail-180621.png
+tags: [css]
+---
+<style>
+	* {
+		word-break: break-all;
+	}
+</style>
+
+## 前段として
+
+私はchrome派だ
+
+今日はchromeを使ったCSS整理術をやる
+
+## 使用されていないCSSを探す方法
+
+文字検索というのも一つの手段ですが
+
+その場合、CSSの指定が入れ子構造になった時に
+
+条件をが絞れているのか分かりづらい。
+
+そこでこの方法を紹介する。
+
+<div id="-">
+
+
+
+ありがとうございます。
+
