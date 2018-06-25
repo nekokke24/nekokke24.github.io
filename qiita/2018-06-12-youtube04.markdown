@@ -1,0 +1,343 @@
+## 前段として
+
+最近、雨季に入ってしまって
+
+テンションが下がり気味です。
+
+やっぱり雨の日はThe BeatlesのMaxwell's Silver Hammerですよね
+
+...
+
+ブログの記事ネタが尽きるのではという不安より
+
+早いタイミングで前段が無くなりそうですね☆
+
+では昨日の続きやります。
+
+## youtubeAPI 応用編① -未想定の操作に対処する-
+
+前回のコードだとユーザーが操作した時に耐えられていないです。
+
+というかバグだらけだと部下からクレームをいただきました。
+
+「だから操作しちゃいけないんだってば！」と私
+
+ありがto！
+
+[サンプルはこちら](http://nekokke.tech/sample/youtube/03/index.html "　")
+
+### 調査
+
+まずは他のステータスも含めて対応しましょう。
+
+と、その前に6秒後に自動停止という処理が今回の趣旨と違うのと
+
+ややこいので機能的に削除しました。
+
+前回は
+
+onReady（動画の準備ができた時）と
+
+onStateChange（動画のステータスが変更された時）の停止しか対応していませんでした。
+
+もう一度onStateChange内部にコンソールを仕込みましょう。
+
+```
+console.log(event.target.customOpt.index,event.data);
+```
+
+これで色々と見てみると
+
+ユーザーの操作に対しては
+
+```
+- 再生されている動画を停止したら
+	2(停止) → -1(未開始) → 3(バッファリング中)
+		キューに登録された動画は1(再生中)→3(バッファリング中)→1(再生中)
+
+- 停止されている動画を再生したら
+	-1(未開始) → 3(バッファリング中) → 1(再生中)
+		キューに登録された動画は止まらない笑
+```
+
+でした。
+
+前回の状態もまとめてみたいと思います。
+
+そこで判明したのですが
+
+こちらで明示的に停止するのと
+
+自動的に終了するのとはステータスの変化が違うみたいです。
+
+```
+[ユーザー操作]
+1.再生されている動画を停止したら
+	2(停止) → -1(未開始) → 3(バッファリング中)
+		キューに登録された動画は1(再生中)→3(バッファリング中)→1(再生中)
+
+2.停止されている動画を再生したら
+	-1(未開始) → 3(バッファリング中) → 1(再生中)
+		キューに登録された動画は止まらない笑
+
+[自動]
+3.再生に関しては、-1(未開始) → 3(バッファリング中) → 1(再生中)
+
+4.停止に関しては、0(終了)
+
+[私の操作]
+5.6秒後の明示的な停止に関しては、2(停止) → -1(未開始) → 5(頭出し済み)
+```
+
+今回、6秒後の停止に関しては機能的に削除したので
+
+5番目は除くとして4つの操作に対して対応していきます。
+
+### ■3.再生に関して
+
+まずは必ず再生されたときにはthis.isPlayNumを更新しましょう。
+
+```
+onPlayerStateChange : function(event){
+	if(event.data === YT.PlayerState.PLAYING){
+		this.isPlayNum = event.target.customOpt.index;
+	}
+```
+
+再生に関しては他の処理はいらないでしょう。
+
+### ■4.停止に関して、2.再生されている動画の停止
+
+先程のコンソールをみると自動再生時の動画の終了に関しては0(終了)で取りましょう。
+
+その上で、各処理を共通化して、適切な処理わけをしましょう。
+
+```
+onPlayerStateChange : function(event){
+	if(event.data === YT.PlayerState.ENDED){
+		// 終了
+			// 4.自動再生が終了した時
+			this.addVideoQueue(event);
+			this.rePlayOtherVideo();
+	} else if(event.data === YT.PlayerState.PLAYING){
+		// 再生
+		this.isPlayNum = event.target.customOpt.index;
+	} else if(event.data === YT.PlayerState.PAUSED){
+		// 停止
+			// 2.ユーザーの操作で既に再生されている動画を停止した時
+			this.addVideoQueue(event);
+			this.rePlayOtherVideo();
+	}
+	console.log(event.target.customOpt.index,event.data,this.VIDEO_QUEUE,this.isPlayNum);
+},
+rePlayOtherVideo : function(){
+	if(this.VIDEO_QUEUE.length !== 0){
+		var playIndex = this.VIDEO_QUEUE.shift();
+
+		this.playerContainer[playIndex].mute();
+		this.playerContainer[playIndex].playVideo();
+	}
+},
+addVideoQueue : function(event){
+	this.VIDEO_QUEUE.push(event.target.customOpt.index);
+},
+```
+
+これで
+
+4.自動再生で終了した時、
+又は2.ユーザーの操作で既に再生されている動画を停止した時は
+
+正しい挙動になりました。
+
+[サンプルはこちら](http://nekokke.tech/sample/youtube/04/index1.html "　")
+
+### ■1.停止されている動画の再生
+
+では次は
+
+ユーザーの操作で既に停止されている動画を再生した時の挙動です。
+
+これは再生に引っ掛けるしかないですが
+
+単純に引っ掛けると自動再生した時も引っかかったり
+
+他の必要のない操作に引っかかる可能性があるので
+
+**再生状態になった時に状態変化が起こった動画と現在再生されている動画が違う場合**
+
+という条件で行きましょう。
+
+その時に**明示的にこちらで停止させる。**
+
+そうすると停止させた動画は
+
+2(停止) → -1(未開始) → 5(頭出し済み)
+
+が起きるので先程の停止に対しての処理が発火する。
+
+クリックした動画はユーザーの操作によって自動的に再生されるため
+
+こちらから再生の指示を与える必要はない。
+
+コードだとこんな感じです。
+
+```
+onPlayerStateChange : function(event){
+	if(event.data === YT.PlayerState.ENDED){
+		// 終了
+
+			// 4.自動再生が終了した時
+			this.addVideoQueue(event);
+			this.rePlayOtherVideo();
+	} else if(event.data === YT.PlayerState.PLAYING){
+		// 再生
+			
+			// 1.ユーザーの操作で既に停止されている動画を再生した時
+			if(event.target.customOpt.index !== this.isPlayNum) {
+				this.playerContainer[this.isPlayNum].stopVideo();
+			}
+			
+			// 共通処理
+			this.isPlayNum = event.target.customOpt.index;
+	} else if(event.data === YT.PlayerState.PAUSED){
+		// 停止
+			
+			// 2.ユーザーの操作で既に再生されている動画を停止した時
+			this.addVideoQueue(event);
+			this.rePlayOtherVideo();
+	}
+	console.log(event.target.customOpt.index,event.data,this.VIDEO_QUEUE,this.isPlayNum);
+},
+```
+
+全体的に表示すると
+
+```
+<!DOCTYPE html>
+<html>
+<body>
+<div class="player" data-youtube-id="7ROwBMBlEWM"></div>
+<div class="player" data-youtube-id="7ROwBMBlEWM"></div>
+
+<script>
+	var NEKOKKE = NEKOKKE || {};
+
+	NEKOKKE.YOUTUBE = {
+		opt : {
+			stopWaitTime : 6000
+		},
+		init : function(){
+			this.setParameters();
+			this.prepare();
+		},
+		setParameters : function(){
+			this.playerContainer = [];
+			this.playerSelectors = document.querySelectorAll('.player');
+			this.isPlayNum = -1;
+			this.VIDEO_QUEUE = [];
+		},
+		prepare : function(){
+			this.addAPI();
+			this.setId();
+			this.changePath();
+			window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady;
+		},
+		addAPI : function(){
+			var tag = document.createElement('script');
+			tag.src = "https://www.youtube.com/iframe_api";
+			var firstScriptTag = document.getElementsByTagName('script')[0];
+			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+		},
+		setId : function(){
+			for (var i = 0; i < this.playerSelectors.length; i++) {
+				this.playerSelectors[i].id = 'player' + i;
+			}
+		},
+		onYouTubeIframeAPIReady : function(){
+			for (var i = 0; i < this.playerSelectors.length; i++) {
+				this.playerContainer[i] = new YT.Player('player' + i, {
+					height: '360',
+					width: '640',
+					done : false,
+					videoId: this.playerSelectors[i].getAttribute('data-youtube-id'),
+					events: {
+						'onReady': this.onPlayerReady,
+						'onStateChange': this.onPlayerStateChange
+					}
+				});
+			}
+			for (var i = 0; i < this.playerSelectors.length; i++) {
+				this.playerContainer[i].customOpt = {
+					index : i
+				};
+			}
+		},
+		onPlayerReady : function(event){
+
+			event.target.mute();
+
+			if(this.isPlayNum === -1){
+				this.isPlayNum = event.target.customOpt.index;
+
+				event.target.playVideo();
+			} else {
+				this.VIDEO_QUEUE.push(event.target.customOpt.index);
+			}
+		},
+		onPlayerStateChange : function(event){
+			if(event.data === YT.PlayerState.ENDED){
+				// 終了
+
+					// 4.自動再生が終了した時
+					this.addVideoQueue(event);
+					this.rePlayOtherVideo();
+			} else if(event.data === YT.PlayerState.PLAYING){
+				// 再生
+					
+					// 1.ユーザーの操作で既に停止されている動画を再生した時
+					if(event.target.customOpt.index !== this.isPlayNum) {
+						this.playerContainer[this.isPlayNum].stopVideo();
+					}
+					
+					// 共通処理
+					this.isPlayNum = event.target.customOpt.index;
+			} else if(event.data === YT.PlayerState.PAUSED){
+				// 停止
+					
+					// 2.ユーザーの操作で既に再生されている動画を停止した時
+					this.addVideoQueue(event);
+					this.rePlayOtherVideo();
+			}
+			console.log(event.target.customOpt.index,event.data,this.VIDEO_QUEUE,this.isPlayNum);
+		},
+		rePlayOtherVideo : function(){
+			if(this.VIDEO_QUEUE.length !== 0){
+				var playIndex = this.VIDEO_QUEUE.shift();
+
+				this.playerContainer[playIndex].playVideo();
+			}
+		},
+		addVideoQueue : function(event){
+			this.VIDEO_QUEUE.push(event.target.customOpt.index);
+		},
+		changePath : function(){
+			this.onPlayerReady = this.onPlayerReady.bind(this);
+			this.onPlayerStateChange = this.onPlayerStateChange.bind(this);
+			this.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
+		}
+	};
+
+	NEKOKKE.YOUTUBE.init();
+</script>
+</body>
+</html>
+```
+
+[サンプルはこちら](http://nekokke.tech/sample/youtube/04/ "　")
+
+以上になります。
+
+これで完成です。次回は更に応用していきます。
+
+参考（[https://developers.google.com/youtube/iframe_api_reference](https://developers.google.com/youtube/iframe_api_reference "　")）

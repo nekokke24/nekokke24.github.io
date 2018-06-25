@@ -1,0 +1,541 @@
+## 前段として
+
+最近、お酒を飲むと
+
+記憶がなくなり、そんなつもりではないのに
+
+人に迷惑をかけてしまう事が多くなりました。
+
+そんな、もう連絡が取れなくなってしまった大切な人たちに
+
+この記事を捧げます。
+
+読んで下さい。「横並び」
+
+## 1.floatによる横並び
+
+<style>
+.list > li {
+	width: 25%;
+	float: left;
+	border: solid 1px #000;
+	height: 200px;
+}
+</style>
+<ul class="list cf">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+</ul>
+---
+
+```
+<ul class="list cf">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+</ul>
+
+.list > li {
+	width: 25%;
+	float: left;
+	border: solid 1px #000;
+	height: 200px;
+	box-sizing: border-box;
+}
+```
+
+まず、ベタなところから
+
+特徴として、floatの場合は各内部要素の高さに関わらず左上に引っ張られるとうこと
+
+どういうことかと言うと
+
+下の2番目の要素のみ高さが高かった場合にこうなる
+
+<ul class="list cf">
+	<li>1</li>
+	<li style="height: 300px;">2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+</ul>
+---
+
+```
+<ul class="list cf">
+	<li>1</li>
+	<li style="height: 300px;">2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+</ul>
+
+.list > li {
+	width: 25%;
+	float: left;
+	border: solid 1px #000;
+	height: 200px;
+	box-sizing: border-box;
+}
+```
+
+今の例ではわかりやすくやっていますが
+
+実際のサイトでは1pxでも揃ってないとこういう現象が起きる
+
+対して
+
+## 2.inline-blockによる横並び
+
+<style>
+.box > li {
+	width: 25%;
+	display: inline-block;
+	border: solid 1px #000;
+	height: 200px;
+}
+</style>
+<ul class="box">
+	<li>1</li>
+	<li style="height: 300px;">2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+</ul>
+---
+
+```
+<ul class="box">
+	<li>1</li>
+	<li style="height: 300px;">2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+</ul>
+
+.box > li {
+	width: 25%;
+	display: inline-block;
+	border: solid 1px #000;
+	height: 200px;
+	box-sizing: border-box;
+}
+```
+
+inline-blockでの横並びは
+
+横並びのラインを行として考えます。
+
+つまり先程の2番目の要素のみ高さが揃わなくても
+
+その行で一番高さがある要素に行が合わせてくれるということです。
+
+ただ、先程とちょっと見た目が違いますね
+
+これはinline-block、inline要素のもつバグが原因です。
+
+inline系の要素同士でソースコード上、改行をいれてしまうと
+
+表示で半角スペースが入るという有名なバグなので
+
+これを実装する時は
+
+```
+<ul class="box"><li>1</li><li style="height: 300px;">2</li><li>3</li><li>4</li><li>5</li></ul>
+```
+
+でもこれだと可読性が落ちてしまうので
+
+昔からあるのは
+
+```
+<ul class="box"><!--
+	--><li>1</li><!--
+	--><li style="height: 300px;">2</li><!--
+	--><li>3</li><!--
+	--><li>4</li><!--
+	--><li>5</li><!--
+--></ul>
+```
+
+まぁこれも見づらいですが...
+
+ただ、私は大きな会社のサービスの運用保守で2年間働いていた時があり
+
+その時はサーバーサイドのエンジニアさんに上の書き方はやめてくれと言われましたね
+
+その方はJSPで取り込みしていたのですが
+
+おそらく取り込みづらいんだと思います。
+
+最近はこんな感じで組んでいますが
+
+これもSEO的にどうなのかわかりませんね。
+
+<style>
+.add {
+	font-size: 0;
+}
+.add > li {
+		font-size: 16px;
+}
+</style>
+<ul class="box add">
+	<li>1</li>
+	<li style="height: 300px;">2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+</ul>
+---
+
+```
+<ul class="box add">
+	<li>1</li>
+	<li style="height: 300px;">2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+</ul>
+
+.add {
+	font-size: 0;
+}
+.add > li {
+	font-size: 16px;
+}
+.box > li {
+	width: 25%;
+	display: inline-block;
+	border: solid 1px #000;
+	height: 200px;
+	box-sizing: border-box;
+}
+```
+
+## 3.使い分け
+
+最近ではflexでの横並びの方が多くなってきたのであれですが
+
+当時は「グリッドの高さが変更された時に他要素はどういう挙動なのか？」という観点で組んでいました。
+
+1.基本的にはfloat（inline-blockのバグがしんどいから）
+
+2.「グリッドの高さが変更された時に他要素はその行で一番高い高さに準じて左につまる」挙動であればinline-blockでした。
+
+## 4.余白の取り方
+
+どちらの挙動にしたとしても余白の取り方幅の考え方は同じです。
+
+<style>
+.list > li {
+	width: 25%;
+	float: left;
+	border: solid 1px #000;
+	height: 200px;
+}
+</style>
+<ul class="list cf">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+</ul>
+---
+
+```
+<ul class="list cf">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+</ul>
+
+.list > li {
+	width: 25%;
+	float: left;
+	border: solid 1px #000;
+	height: 200px;
+	box-sizing: border-box;
+}
+```
+
+例えばこれに余白を与えるとしたら
+
+まずこういう増えたり減ったりする要素に関しては
+
+最小のコードで最大の耐久力を考えます。
+
+余白をli+liでとると2行目に対応できないので
+
+こういう時はまず全ての要素を同じ条件にしてあげる事が重要です。
+
+なので
+
+<ul class="list2 cf">
+	<li><span>1</span></li>
+	<li><span>2</span></li>
+	<li><span>3</span></li>
+	<li><span>4</span></li>
+	<li><span>5</span></li>
+</ul>
+
+<style>
+.list2 > li {
+	width: 25%;
+	float: left;
+	height: 200px;
+	box-sizing: border-box;
+	padding-left: 20px;
+}
+.list2 > li > span {
+	display: block;
+	height: 100%;
+	border: solid 1px #000;
+}
+</style>
+---
+
+```
+<ul class="list2 cf">
+	<li><span>1</span></li>
+	<li><span>2</span></li>
+	<li><span>3</span></li>
+	<li><span>4</span></li>
+	<li><span>5</span></li>
+</ul>
+
+<style>
+.list2 > li {
+	width: 25%;
+	float: left;
+	height: 200px;
+	box-sizing: border-box;
+	padding-left: 20px;
+}
+.list2 > li > span {
+	display: block;
+	height: 100%;
+	border: solid 1px #000;
+}
+</style>
+```
+
+ここでのポイントはもう一つ
+
+width内にpaddingを含めること
+
+正しい計算をすれば良いですが
+
+余白は絶対値で幅は相対値だった場合(幅25%,余白20pxなど)
+
+余白+幅 = 相対値 になることや、余白+幅 = 絶対値 になると最悪です。
+
+そもそも余白は絶対値で幅は相対値なので、合計がどちらかによることはないです。
+
+そこで、よりシンプルに幅25%内に含んじゃいましょう！です。
+
+なので余白はpaddingでとり、box-sizing: border-box;
+
+そしてデザインのボーダーは内部にspanかdivをいれてそこで取りましょう。
+
+これで全ての要素が同じ条件で横並びになっています。
+
+その上で外郭の不必要な余白を削る。
+
+<div class="list2wrap">
+	<ul class="list2 cf">
+		<li><span>1</span></li>
+		<li><span>2</span></li>
+		<li><span>3</span></li>
+		<li><span>4</span></li>
+		<li><span>5</span></li>
+	</ul>
+</div>
+
+<style>
+.list2wrap {
+	overflow: hidden;
+}
+.list2wrap > .list2 {
+	margin-left: -20px;
+}
+</style>
+---
+
+```
+<div class="list2wrap">
+	<ul class="list2 cf">
+		<li><span>1</span></li>
+		<li><span>2</span></li>
+		<li><span>3</span></li>
+		<li><span>4</span></li>
+		<li><span>5</span></li>
+	</ul>
+</div>
+
+<style>
+.list2wrap {
+	overflow: hidden;
+}
+.list2wrap > .list2 {
+	margin-left: -20px;
+}
+.list2 > li {
+	width: 25%;
+	float: left;
+	height: 200px;
+	box-sizing: border-box;
+	padding-left: 20px;
+}
+.list2 > li > span {
+	display: block;
+	height: 100%;
+	border: solid 1px #000;
+}
+</style>
+```
+
+そしてそれは上も同じなので
+
+<div class="list3wrap">
+	<ul class="list3 cf">
+		<li><span>1</span></li>
+		<li><span>2</span></li>
+		<li><span>3</span></li>
+		<li><span>4</span></li>
+		<li><span>5</span></li>
+	</ul>
+</div>
+
+<style>
+.list3wrap {
+	overflow: hidden;
+}
+.list3wrap > .list3 {
+	margin-left: -20px;
+	margin-top: -20px;
+}
+.list3 > li {
+	width: 25%;
+	float: left;
+	height: 200px;
+	box-sizing: border-box;
+	padding-left: 20px;
+	margin-top: 20px;
+}
+.list3 > li > span {
+	display: block;
+	height: 100%;
+	border: solid 1px #000;
+}
+</style>
+---
+
+```
+<div class="list3wrap">
+	<ul class="list3 cf">
+		<li><span>1</span></li>
+		<li><span>2</span></li>
+		<li><span>3</span></li>
+		<li><span>4</span></li>
+		<li><span>5</span></li>
+	</ul>
+</div>
+
+<style>
+.list3wrap {
+	overflow: hidden;
+}
+.list3wrap > .list3 {
+	margin-left: -20px;
+	margin-top: -20px;
+}
+.list3 > li {
+	width: 25%;
+	float: left;
+	height: 200px;
+	box-sizing: border-box;
+	padding-left: 20px;
+	margin-top: 20px;
+}
+.list3 > li > span {
+	display: block;
+	height: 100%;
+	border: solid 1px #000;
+}
+</style>
+```
+
+ただ最近ではcalcが出てきたので
+
+めんどくさい計算してもスマートに書きたい人はこっち
+
+<ul class="list4 cf">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+</ul>
+
+<style>
+.list4 > li {
+	width: calc( (100% - ( 25px * (4-1) )) * (1/4) );
+	float: left;
+	height: 200px;
+	box-sizing: border-box;
+	border: solid 1px #000;
+}
+.list4 > li:not(:nth-child(4n+1)) {
+	margin-left: 20px;
+}
+.list4 > li:nth-child(4) ~ li {
+	margin-top: 20px;
+}
+</style>
+---
+
+```
+<ul class="list4 cf">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+</ul>
+
+<style>
+
+/*	width: ([全体] - ([余白] * ([グリッド数] - 1))) * (1/[グリッド数]);
+	簡単にいえば、全体から先に余白分を引いてその上で分割するということ */
+.list4 > li {
+	width: calc( (100% - ( 25px * (4-1) )) * (1/4) );
+	float: left;
+	height: 200px;
+	box-sizing: border-box;
+	border: solid 1px #000;
+}
+
+/*	グリッド数の倍数の+1ではない要素の左の余白を設定	*/
+.list4 > li:not(:nth-child(4n+1)) {
+	margin-left: 20px;
+}
+
+/*	グリッド数以降の要素、2行目以降の上の余白を設定	*/
+.list4 > li:nth-child(4) ~ li {
+	margin-top: 20px;
+}
+</style>
+```
+
+flexの横並びは時間が足りないので次回やります。
+
+以上です。

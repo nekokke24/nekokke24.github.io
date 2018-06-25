@@ -1,0 +1,16 @@
+@charset "UTF-8";
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.target {
+	font-size: 12px;
+}
+.fake {
+	background-color: red;
+}
+.fake,
+.target {
+	font-weight: bold;
+}

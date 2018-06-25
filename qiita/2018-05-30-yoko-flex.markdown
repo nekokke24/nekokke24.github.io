@@ -1,0 +1,299 @@
+## 前段として
+
+平成が終わろうとしている今、
+
+昭和を引きずり過ぎだと
+
+身にしみて感じています。
+
+煙たいですし、むさ苦しいですよね。
+
+世の中も昔より便利な時代になりました。
+
+若い子達はflexを使えば簡単に横並びができるでしょう。
+
+でも考えなければ行けない事は本人たちが想像する以上にあって
+
+それは言わないと伝わらないです。
+
+若輩者ではございますが
+
+こんな私が昭和を代表して
+
+flexの使い方に関して、物申させていただきます。
+
+よろしくお願いします。
+
+## 1.トルツメが考えられていないやつは大バカ野郎
+
+<ul class="list">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+</ul>
+<style>
+	.list {
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+	}
+	.list > li {
+		width: 30%;
+		height: 200px;
+		box-sizing: border-box;
+		border: solid 1px black;
+	}
+</style>
+---
+
+```
+<ul class="list">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+</ul>
+
+<style>
+	.list {
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+	}
+	.list > li {
+		width: 30%;
+		height: 200px;
+		box-sizing: border-box;
+		border: solid 1px black;
+	}
+</style>
+```
+
+こうすれば、余白を定義する必要ないじゃん！とキッズ達
+
+だが、この実装は要素が増減したときの挙動が考えられていない
+
+キッズ達のflexはこういう挙動になる
+
+<ul class="list">
+	<li>1</li>
+	<li>2</li>
+</ul>
+
+本来挙動としては減ったとき、下記のような挙動を想定するはず
+
+<ul class="list2">
+	<li>1</li>
+	<li>2</li>
+</ul>
+<style>
+	.list2 {
+		display: flex;
+		flex-wrap: wrap;
+	}
+	.list2 > li:not(:nth-child(3n+1)) {
+		margin-left: 5%;
+	}
+	.list2 > li {
+		width: 30%;
+		height: 200px;
+		box-sizing: border-box;
+		border: solid 1px black;
+	}
+</style>
+
+
+これはjustify-content: space-between;が影響しています。
+
+なので、余白を定義しなくて良いことはありません。
+
+楽しようとしないでください。
+
+## 2.flexの子供にabsoluteかけるやつは完全に的外れ
+
+バグは説明できないからバグなのだが
+
+これをやるとsafariで子要素が指定した位置からどこかにぶっ飛ぶ
+
+最新のsafariはどうかわからないけど
+
+flexって今では浸透してきたけど
+
+まだ全然枯れてないし、不安定な部分もあるってこと。
+
+でもflexじゃなくても
+
+floatしている要素にabsoluteかけるやつもあまりいないし
+
+inline要素にabsoluteかけるやつもあまりいない。
+
+掛け合わせが悪いってことだと思う
+
+## 3.ノリで余白いれるやつはマジで気味が悪い
+
+<ul class="list3">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+</ul>
+<style>
+	.list3 {
+		display: flex;
+	}
+	.list3 > li {
+		width: 30%;
+		height: 200px;
+		box-sizing: border-box;
+		border: solid 1px black;
+	}
+	.list3 > li + li {
+		margin-left: 100px;
+	}
+</style>
+---
+
+```
+<ul class="list3">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+</ul>
+
+<style>
+	.list3 {
+		display: flex;
+	}
+	.list3 > li {
+		width: 30%;
+		height: 200px;
+		box-sizing: border-box;
+		border: solid 1px black;
+	}
+	.list3 > li + li {
+		margin-left: 100px;
+	}
+</style>
+```
+
+1列のみの横並びなら、flex-wrapをwrapする必要がないけど
+
+それを利用して適当な余白を入れるキッズコードを見たことがある
+
+これだとmarginの100pxに押されて
+
+子要素がwidth 30%を保ててない
+
+入力した数値と違うのに
+
+見た目があっているからといってそのままにしてしまっては
+
+あとで痛い目に遭う
+
+## 4.要素幅を均一にしたいときにflex-growを使うやつは最低野郎
+
+<ul class="list4">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+	<li>6</li>
+	<li>7</li>
+</ul>
+<style>
+	.list4 {
+		display: flex;
+	}
+	.list4 > li {
+		flex-grow: 1;
+		height: 100px;
+		box-sizing: border-box;
+		border: solid 1px black;
+	}
+</style>
+---
+
+```
+<ul class="list4">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+	<li>6</li>
+	<li>7</li>
+</ul>
+
+<style>
+	.list4 {
+		display: flex;
+	}
+	.list4 > li {
+		flex-grow: 1;
+		height: 100px;
+		box-sizing: border-box;
+		border: solid 1px black;
+	}
+</style>
+```
+
+現状の状態だと問題ないが
+
+これは、内部要素が要素幅を超えると意図した挙動とずれてくる
+
+<ul class="list4">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+	<li>4.testtesttesttesttesttesttesttesttes</li>
+	<li>5</li>
+	<li>6</li>
+	<li>7</li>
+</ul>
+
+本来であれば4の箱の幅より内部の要素が増えた場合
+
+改行してほしいものです。
+
+ですが、そうではない。
+
+そもそもflex-growとは要素の比率を決定するものではありません。
+
+全体幅から要素幅を抜いた余白の分配率なのです。
+
+なので中身の要素が入っていればいるほど
+
+分配する余白は小さくなります。
+
+コードで説明すると
+
+<ul class="list5">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+	<li>4.testtesttesttesttesttesttesttesttes</li>
+	<li>5</li>
+	<li>6</li>
+	<li>7</li>
+</ul>
+<style>
+	.list5 {
+		display: flex;
+		background-color: rgb(206, 136, 123);
+	}
+	.list5 > li {
+		height: 100px;
+		box-sizing: border-box;
+		border: solid 1px black;
+		background-color: white;
+	}
+</style>
+
+この色の塗った部分をすべて1:1で分配しているだけということ。
+
+それをわかってないと中身の要素を変更しただけで終了する。
+
+shrinkはgrowとは逆に余った余白ではなく、オーバーした余白になる。
+
+以上になります。
+
+ありがとうございます。

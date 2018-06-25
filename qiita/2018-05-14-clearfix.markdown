@@ -1,0 +1,223 @@
+## 前段
+
+最近ではflexが出てきたので
+
+あまり使われていない印象のfloat+cleafixですが「回り込み」を使いたい時などまだ使いようがあるので
+
+floatをした際のclearfixがどのような仕組みなのか解説していきます。
+
+レガシーなブラウザ対応で色々と着色されがちですが最小単位でいくと下記のコードになるかと思います。
+
+```
+.clearfix:after {
+	content: "";
+	display: block;
+	clear: both;
+}
+```
+
+上記のコードはモダンブラウザ、正確には:before,:afterが使用できるブラウザの場合です。
+
+つまりIE7などは対象外となりますが、基本的には上記のコードがベースになります。
+
+1行1行解説して行く前に、何故それが必要か説明します。
+
+## まず何故floatをクリアする必要があるのか？
+
+通常、floatした場合は要素が浮いてしまいます。
+
+画面のz軸に透明のフィルターが重なっていると考えてください。一番下から
+
+```
+0.position:static,float:none(初期値)
+v
+1.position:static,float:left or right(float使用時)
+v
+2.position:absolute or fixed(absolute or fixed使用時)
+→absolute及びfixedを使用した場合はfloatの使用に問わずこの状態になる。
+→初期値z-index:0
+v
+2x.z-indexによる重なり順
+```
+
+なので使用すると要素が浮きっぱなしになってしまいます。
+
+通常は地に足がついています（0階層）がfloatを使用すると半浮遊（1階層）になってしまうので
+
+階層が違うと他階層の要素を正しく認識できないと考えてください。
+
+absolute or fixedの場合は完全浮遊（2階層）するため、クリアはできません。(2階層は他階層との干渉は無理)
+
+ですが1階層<->0階層は1階層の要素をclearしてあげることで
+
+0階層が1階層を正常に認識することができます。
+
+これがclearです。
+
+## clearの使い方
+
+
+<div style="border: solid 1px #78909c; padding: 20px;">
+<div style="float: left; background-color: #42a5f5; width: 100px; height: 100px;">float:left</div>
+<div>text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text </div>
+</div>
+<div style="padding-top: 20px; clear: left;">
+<div style="width: 100%; height: 50px; background-color: #ef5350;">clear:left</div>
+</div>
+
+
+通常の使い方はこんな感じです。
+
+ただこの場合だと保守性が低いと言われます。
+
+この保守性とは消した時や増やした時に想定した挙動になるのか？という点です。
+
+web制作及び運用において、要素の変更や順序の入れ替えは頻繁に行われます。
+
+その際にどれだけその変更にコードが耐えられるかが設計する上で大事になります。
+
+より長持ちするコードがということですね。
+
+この場合、赤のエリアがなくなった時
+
+clearの効果は失われてしまいます。
+
+となると、赤のエリアを削除または後続の要素と順序を入れ替えるなどをした瞬間にレイアウトが崩れてしまうため
+
+コーディング時に「青の横並びのエリアの後ろの要素には必ずclearをかけなさい」というルールが追加されてしまいます。
+
+webでは担当者もコロコロ変わるので、このルールをずっと守り続けるのはしんどいですね。
+
+## clearfixの仕組み
+
+そこでどのような要素がきてもclearができる仕組みclearfixが役に立ちます。
+
+これはどのような要素がきても、そして削除されてもclearができる状態
+
+つまり枠線のエリアでclearを完結されるという仕組みです。
+
+ではclearfixがどこでclearしているのか見てみましょう。
+
+
+<div style="border: solid 1px #78909c; padding: 20px;">
+<div style="float: left; background-color: #42a5f5; width: 100px; height: 100px;">float:left</div>
+<div>text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text </div>
+<div style="color: #ef5350; clear: left; font-size: 20px;">・</div>
+</div>
+<div style="padding-top: 20px; clear: left;">
+<div style="width: 100%; height: 50px; background-color: #ef5350;"></div>
+</div>
+
+この赤い点です。
+
+この赤い点の時点でclearするため
+
+後続に何の要素がきてもclearすることができます。
+
+それを可能にしているのが疑似要素:before,:afterというプロパティです。
+
+この要素はそれぞれ下記の位置に擬似的に要素を挿入できるcssプロパティです。
+
+ターゲットとなるDOM要素の中の始まりと終わりにそれぞれ指定できます。
+
+例えば
+
+```
+.target:after
+```
+
+であれば
+
+```
+<div class="target">
+	要素
+	[:after]
+</div>
+```
+
+この位置で作成されます。
+
+なので
+floatしたい要素は必ずdivなどのDOM要素でラップして
+afterにclearを指定することで
+
+```
+<div class="clearfix">
+	<div style="float: left;"></div>
+	<div>text text text text text text text text text text text text text text text text text text </div>
+	[:after]→ここでclear
+</div>
+```
+
+上記の状態が可能になります。
+
+## コードの解説
+
+それでは、最初に戻ってコードを見ていきましょう
+
+下記が最小単位のclearfixです。
+
+```
+.clearfix:after {
+1:	content: "";
+2:	display: block;
+3:	clear: both;
+}
+```
+
+一行一行いきましょう。
+
+### まず1行目に関してのcontent: "";に関しては
+
+これはルールとして疑似要素を作動させるためにはcontentプロパティを指定しないと機能しません。
+
+これは作動スイッチと考えてください。
+
+他の使い方としてcontent:"■";などをするとafter,beforeの位置に文字列を挿入することができます。
+
+なのでcontent: "";は該当の位置に空の要素を挿入という意味になります。
+
+### 2行目のdisplay: block;に関して
+
+これはclearというプロパティがブロック要素にしか効かないためです。
+
+通常、疑似要素は初期値がdisplay: inline;になります。
+
+なので、displayをblockに変更してあげる必要があります。
+
+### 3行目のclear: both;について
+
+最後にclearプロパティです。
+
+ここはfloat:leftもfloat:rightも対応できるように
+
+clear: both;と指定しましょう。
+
+これで最小単位のclearfixの完成です。
+
+## 最後に
+
+もしIE7の対応もいれるのであれば、下記のようになりますが
+
+これはbefore,afterが使用できないブラウザに対して
+
+別の形で要素を認識させる方法があるため色々と対応ブラウザによってはカスタマイズされています。
+
+（それぞれ例えばIE7以前に関して言えば、haslayoutプロパティをonにするなど）
+
+```
+.clearfix {
+	zoom: 1;
+}
+.clearfix:after {
+	content: "";
+	display: block;
+	clear: both;
+}
+```
+
+現時点でIE7まで対象とした範囲も珍しいので
+
+モダンブラウザの最小単位で問題ないでしょう。
+
+以上となります。

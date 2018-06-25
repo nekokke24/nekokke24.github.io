@@ -1,0 +1,552 @@
+## 前段として
+
+以前、レスポンシブサイトにおいてテキストも含めて
+
+1pxもずらしてはいけないという地獄で修行していた時期がありまして
+
+どうしたらこの苦行を楽にできるかという
+
+煩悩に取り憑かれて作ったシステムを今日は紹介したいです。
+
+主にテキスト周りが辛かったため
+
+「line-heightまで考慮した余白取りのシステム化」を作りました。
+
+line-heightまで考慮した余白取りは
+
+あるべき論であって都市伝説みたいに思ってましたから
+
+自然と涙が出ました。所々に修羅を感じると思います。
+
+では早速、小技集やります。
+
+基本的に一般的に出回っているのはいいので
+
+上の「line-heightシステム」も含めて
+
+私が最近考えて自分で使っているコードを何個か紹介していきます。
+
+## 01
+<ul class="list">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+</ul>
+
+<style>
+.list {
+	display: flex;
+	flex-wrap: wrap;
+}
+.list > li {
+	width: calc( (100% - ( 25px * (4-1) )) * (1/4) );
+	height: 200px;
+	box-sizing: border-box;
+	border: solid 1px black;
+	
+}
+.list > li:not(:nth-child(4n+1)) {
+	margin-left: 25px;
+}
+.list > li:nth-child(4) ~ li {
+	margin-top: 25px;
+}
+</style>
+---
+
+```
+<ul class="list">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+</ul>
+
+<style>
+.list {
+	display: flex;
+	flex-wrap: wrap;
+}
+.list > li {
+	width: calc( (100% - ( 25px * (4-1) )) * (1/4) );
+	height: 200px;
+	box-sizing: border-box;
+	border: solid 1px black;
+	
+}
+.list > li:not(:nth-child(4n+1)) {
+	margin-left: 25px;
+}
+.list > li:nth-child(4) ~ li {
+	margin-top: 25px;
+}
+</style>
+```
+
+以前のコードでも紹介しましたが
+
+グリッド数が変更になった時は起因する数字が多いので面倒だが
+
+最小DOM数で構成できる点がなんともクールだと思う。
+
+## 02
+<div class="section">内部コンテンツ</div>
+<div class="section">内部コンテンツ</div>
+
+<style>
+.section {
+	box-sizing: border-box;
+	background-color: rgb(206, 136, 123);
+	height: 100px;
+	text-align: center;
+}
+.section + .section {
+	margin-top: 20px;
+}
+@media (min-width: 500px) {
+	.section {
+		padding-left: calc((100% - 500px) / 2);
+		padding-right: calc((100% - 500px) / 2);
+	}
+}
+</style>
+---
+
+```
+<div class="section"></div>
+<div class="section"></div>
+
+<style>
+.section {
+	box-sizing: border-box;
+	background-color: rgb(206, 136, 123);
+	height: 100px;
+	text-align: center;
+}
+.section + .section {
+	margin-top: 20px;
+}
+@media (min-width: 500px) {
+	.section {
+		padding-left: calc((100% - 500px) / 2);
+		padding-right: calc((100% - 500px) / 2);
+	}
+}
+</style>
+```
+
+今まで色を画面いっぱいに広げて塗るという行為と
+
+幅のmax-widthは共存できなかったけど
+
+こういうやり方をすれば1つのDOMに対して設定することが可能になる。
+
+渋い
+
+## 03
+<div class="flex">
+	<div class="flex-item"></div>
+	<div class="flex-item"></div>
+	<div class="flex-item"></div>
+</div>
+
+<style>
+.flex {
+	display: flex;
+	border: solid 1px black;
+}
+.flex-item {
+	width: 50px;
+	height: 100px;
+	background-color: rgb(206, 136, 123);
+}
+.flex-item + .flex-item {
+	margin-left: 10px;
+}
+.flex-item:last-child {
+		margin-left: auto;
+}
+</style>
+---
+
+```
+<div class="flex">
+	<div class="flex-item"></div>
+	<div class="flex-item"></div>
+	<div class="flex-item"></div>
+</div>
+
+<style>
+.flex {
+	display: flex;
+	border: solid 1px black;
+}
+.flex-item {
+	width: 50px;
+	height: 100px;
+	background-color: rgb(206, 136, 123);
+}
+.flex-item + .flex-item {
+	margin-left: 10px;
+}
+.flex-item:last-child {
+		margin-left: auto;
+}
+</style>
+```
+
+ちょっと前に
+
+横並びはflex縛りというルールでやった案件があって
+
+そのときに小要素を2つ左1つ右にというバラバラに動かしたいときに使いました。
+
+marginのautoはflex内部でも使えるところがなんとも粋
+
+## 04
+<div class="clip"></div>
+
+<style>
+.clip {
+	clip-path: inset(0 0 0 0);
+    background-color: rgb(206, 136, 123);
+    animation-name: anim-clip;
+    animation-duration: 2s;
+    animation-timing-function: ease-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    height: 100px;
+}
+@keyframes anim-clip {
+	0% {
+		clip-path: inset(0 0 0 0);
+	}
+	100% {
+		clip-path: inset(100px 0 0 0);
+	}
+}
+</style>
+---
+
+```
+<div class="clip"></div>
+
+<style>
+.clip {
+	clip-path: inset(0 0 0 0);
+    background-color: rgb(206, 136, 123);
+    animation-name: anim-clip;
+    animation-duration: 2s;
+    animation-timing-function: ease-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    height: 100px;
+}
+@keyframes anim-clip {
+	0% {
+		clip-path: inset(0 0 0 0);
+	}
+	100% {
+		clip-path: inset(100px 0 0 0);
+	}
+}
+</style>
+```
+
+アニメーションを行うとき
+
+もし外角の枠をclipし、その枠をアニメーションしたい場合
+
+overflow hiddenをかけたボックスのwidthやheightをアニメーションさせるより
+
+clip-pathを使ったほうが断然なめらか
+
+このクラス自体はie,edgeは使用できないが
+
+矩形であればclipで代用できるので少しカクカクするが
+
+ie,edge向けに下位互換を提供するのはあり
+
+アニメーションをすると複雑になればなるほど
+
+重くなるし、作ったあとにパフォーマンス処理過程で
+
+一部の処理自体を諦めることもあるので
+
+手数としては持っておきたいテクニック
+
+## 05
+<div class="read">
+	<div class="txt">
+		情に棹させば流される。智に働けば角が立つ。どこへ越しても住みにくいと悟った時、詩が生れて、画が出来る。とかくに人の世は住みにくい。意地を通せば窮屈だ。 
+		とかくに人の世は住みにくい。
+		どこへ越しても住みにくいと悟った時、詩が生れて、画が出来る。意地を通せば窮屈だ。山路を登りながら、こう考えた。智に働けば角が立つ。どこへ越しても住みにくいと悟った時、詩が生れて、画が出来る。智に働けば角が立つ。 
+		とかくに人の世は住みにくい。山路を登りながら、こう考えた。とかくに人の世は住みにくい。住みにくさが高じると、安い所へ引き越したくなる。住みにくさが高じると、安い所へ引き越したくなる。情に棹させば流される。 
+	</div>
+</div>
+<div class="read">
+	<div class="txt">
+		情に棹させば流される。智に働けば角が立つ。どこへ越しても住みにくいと悟った時、詩が生れて、画が出来る。とかくに人の世は住みにくい。意地を通せば窮屈だ。 
+		とかくに人の世は住みにくい。
+		どこへ越しても住みにくいと悟った時、詩が生れて、画が出来る。意地を通せば窮屈だ。山路を登りながら、こう考えた。智に働けば角が立つ。どこへ越しても住みにくいと悟った時、詩が生れて、画が出来る。智に働けば角が立つ。 
+		とかくに人の世は住みにくい。山路を登りながら、こう考えた。とかくに人の世は住みにくい。住みにくさが高じると、安い所へ引き越したくなる。住みにくさが高じると、安い所へ引き越したくなる。情に棹させば流される。 
+	</div>
+</div>
+
+<style>
+.read {
+	font-size: 13px;
+	line-height: 20px;
+}
+.read > .txt {
+	margin-bottom: calc((20 - 13) / 2 * -1px);
+}
+.read:first-child > .txt {
+	margin-top: calc((20 - 13) / 2 * -1px);
+}
+.read + .read {
+	margin-top: calc( 32px - (20px - 13px) );
+}
+</style>
+---
+
+```
+<div class="read">
+	<div class="txt">
+		情に棹させば流される。智に働けば角が立つ。どこへ越しても住み...
+	</div>
+</div>
+<div class="read">
+	<div class="txt">
+		情に棹させば流される。智に働けば角が立つ。どこへ越しても住み...
+	</div>
+</div>
+
+<style>
+.read {
+	font-size: 13px;
+	line-height: 20px;
+}
+.read > .txt {
+	margin-bottom: calc((20 - 13) / 2 * -1px);
+}
+.read:first-child > .txt {
+	margin-top: calc((20 - 13) / 2 * -1px);
+}
+
+.read + .read {
+	margin-top: calc( 32px - (20px - 13px) );
+}
+</style>
+```
+
+
+まずやりたきことは
+
+aiなどではline-heightは要素が下にある場合のみ常に下にすべての余白がつくのに対して
+
+webでは上下につくため、大体デザインより1px-5pxほどずれます。
+
+### ai
+```
+
+--- Text Box A
+	[文字A]
+	| 行間 A
+	[文字A]
+---
+
+↑ 余白
+
+--- Text BoxB
+	[文字B]
+---
+
+```
+
+### web
+```
+
+--- Text Box A
+	| 行間 A / 2
+	[文字A]
+	| 行間 A / 2
+	| 行間 A / 2
+	[文字A]
+	| 行間 A / 2
+---
+
+↑ 余白
+
+--- Text Box B
+	| 行間 B / 2
+	[文字B]
+	| 行間 B / 2
+---
+
+```
+
+テキストボックス内の文字と文字の間に関しては
+
+上下の余白の合計値がaiと同じになっていますが
+
+1行でも複数行でもテキストボックスの始まりと終わりが余白をずらしているわけです。
+
+テキストボックスから行間分を引くことで対応したいのですが
+
+要素自体の上下でとってしまうとネガティブ同士で相殺が発生しますからそうもいきません。
+
+なのでまず、一方向だけ内部のテキストボックスで取り
+
+もう一方向は余白で調整します。
+
+その上で、考えなければいけないのは
+
+自身の行間と相手の行間になります。
+
+上で取ると後続に来る要素は常に相手の行間を意識しなくてはいけないため
+
+余白の共通化が難しくなります。
+
+### 1.なので下でとりました。
+```
+
+--- Text Box A
+----- Text Box Inner
+	| 行間 A / 2
+	[文字A]
+	| 行間 A / 2
+	| 行間 A / 2
+	[文字A]
+	| 行間 A / 2
+-----
+↓ 下にネガティブマージン(line-height A / 2) ①
+---
+
+↑ 余白
+
+--- Text Box B
+----- Text Box Inner
+	| 行間 B / 2
+	[文字B]
+	| 行間 B / 2
+-----
+↓ 下にネガティブマージン(line-height A / 2) ①
+---
+
+```
+
+下で取れば、後続の要素を自身の行間のみを意識すれば良いので
+
+font-sizeに伴った余白を用意してあげれば良いです。
+
+### 2.余白の基本方向は下でとり、一番上の要素だけ下+上で取る
+```
+
+--- Text Box A
+↑ 上にネガティブマージン(行間 A / 2）②
+----- Text Box Inner
+	| 行間 A / 2
+	[文字A]
+	| 行間 A / 2
+	| 行間 A / 2
+	[文字A]
+	| 行間 A / 2
+-----
+↓ 下にネガティブマージン(行間 A / 2) ①
+---
+
+↑ 余白
+
+--- Text Box B
+----- Text Box Inner
+	| 行間 B / 2
+	[文字B]
+	| 行間 B / 2
+-----
+↓ 下にネガティブマージン(行間 B / 2) ①
+---
+
+```
+
+### 3.そして、間の余白で自身の行間分を考慮する
+```
+
+--- Text Box A
+↑ 上にネガティブマージン(行間 A / 2）②
+----- Text Box Inner
+	| 行間 A / 2
+	[文字A]
+	| 行間 A / 2
+	| 行間 A / 2
+	[文字A]
+	| 行間 A / 2
+-----
+↓ 下にネガティブマージン(行間 A / 2) ①
+---
+
+↑ 自身の行間を考慮した余白(余白 - 行間 B( (行間 B / 2) + (下のネガティブマージン分(行間 B / 2) ) ) ) ③
+
+--- Text Box B
+----- Text Box Inner
+	| 行間 B / 2
+	[文字B]
+	| 行間 B / 2
+-----
+↓ 下にネガティブマージン(行間 B / 2) ①
+---
+
+```
+
+余白に関しては下のネガティブマージン分下に引っ張られているので
+
+その分を足してあげる必要がある
+
+こうすることで後続に追加する要素は
+
+常に自身の行間を考慮した余白を設定してあげれば
+
+行間が削除された状態を保てる仕組みです。
+
+テキストボックス自体でできる限り完結しているところがポイントです。
+
+では先程のコードをもう一度見ましょう。
+
+```
+<div class="read">
+	<div class="txt">
+		情に棹させば流される。智に働けば角が立つ。どこへ越しても住み...
+	</div>
+</div>
+<div class="read">
+	<div class="txt">
+		情に棹させば流される。智に働けば角が立つ。どこへ越しても住み...
+	</div>
+</div>
+
+<style>
+.read {
+	font-size: 13px;
+	line-height: 20px;
+}
+.read > .txt { // ① ( 行間（line-height - font-size）/ 2 * -1(ネガティブ方向に) )
+	margin-bottom: calc(((20 - 13) / 2 * -1px));
+}
+.read:first-child > .txt { // ② 行間（line-height - font-size）/ 2 * -1(ネガティブ方向に)
+	margin-top: calc((20 - 13) / 2 * -1px);
+}
+
+.read + .read { // ③ 余白 - 行間（line-height - font-size)
+	margin-top: calc( 32px - (20px - 13px) );
+}
+</style>
+```
+
+以上になります。
+
+ただ、これ普通に部下に壊されたので取扱には注意してください。
+
+ありがとうございます。

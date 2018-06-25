@@ -1,0 +1,447 @@
+## 前段として
+
+ドメインとりました！
+
+[http://nekokke.tech/](http://nekokke.tech/ "　")
+
+これからもスティーブと二人三脚で精進いたします。
+
+次回はyoutube編お休みします。
+
+ちょっと他の言語もやりたいので
+
+## youtubeAPI 応用編② -サムネイル対応-
+
+それでは今回はサムネイル表示に挑戦します。
+
+前回のサンプルがこちら
+
+[サンプルはこちら](http://nekokke.tech/sample/youtube/04/ "　")
+
+```
+<!DOCTYPE html>
+<html>
+<body>
+<div class="player" data-youtube-id="7ROwBMBlEWM"></div>
+<div class="player" data-youtube-id="7ROwBMBlEWM"></div>
+
+<script>
+	var NEKOKKE = NEKOKKE || {};
+
+	NEKOKKE.YOUTUBE = {
+		opt : {
+			stopWaitTime : 6000
+		},
+		init : function(){
+			this.setParameters();
+			this.prepare();
+		},
+		setParameters : function(){
+			this.playerContainer = [];
+			this.playerSelectors = document.querySelectorAll('.player');
+			this.isPlayNum = -1;
+			this.VIDEO_QUEUE = [];
+		},
+		prepare : function(){
+			this.addAPI();
+			this.setId();
+			this.changePath();
+			window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady;
+		},
+		addAPI : function(){
+			var tag = document.createElement('script');
+			tag.src = "https://www.youtube.com/iframe_api";
+			var firstScriptTag = document.getElementsByTagName('script')[0];
+			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+		},
+		setId : function(){
+			for (var i = 0; i < this.playerSelectors.length; i++) {
+				this.playerSelectors[i].id = 'player' + i;
+			}
+		},
+		onYouTubeIframeAPIReady : function(){
+			for (var i = 0; i < this.playerSelectors.length; i++) {
+				this.playerContainer[i] = new YT.Player('player' + i, {
+					height: '360',
+					width: '640',
+					done : false,
+					videoId: this.playerSelectors[i].getAttribute('data-youtube-id'),
+					events: {
+						'onReady': this.onPlayerReady,
+						'onStateChange': this.onPlayerStateChange
+					}
+				});
+			}
+			for (var i = 0; i < this.playerSelectors.length; i++) {
+				this.playerContainer[i].customOpt = {
+					index : i
+				};
+			}
+		},
+		onPlayerReady : function(event){
+
+			event.target.mute();
+
+			if(this.isPlayNum === -1){
+				this.isPlayNum = event.target.customOpt.index;
+
+				event.target.playVideo();
+			} else {
+				this.VIDEO_QUEUE.push(event.target.customOpt.index);
+			}
+		},
+		onPlayerStateChange : function(event){
+			if(event.data === YT.PlayerState.ENDED){
+				// 終了
+
+					// 4.自動再生が終了した時
+					this.addVideoQueue(event);
+					this.rePlayOtherVideo();
+			} else if(event.data === YT.PlayerState.PLAYING){
+				// 再生
+					
+					// 1.ユーザーの操作で既に停止されている動画を再生した時
+					if(event.target.customOpt.index !== this.isPlayNum) {
+						this.playerContainer[this.isPlayNum].stopVideo();
+					}
+					
+					// 共通処理
+					this.isPlayNum = event.target.customOpt.index;
+			} else if(event.data === YT.PlayerState.PAUSED){
+				// 停止
+					
+					// 2.ユーザーの操作で既に再生されている動画を停止した時
+					this.addVideoQueue(event);
+					this.rePlayOtherVideo();
+			}
+			console.log(event.target.customOpt.index,event.data,this.VIDEO_QUEUE,this.isPlayNum);
+		},
+		rePlayOtherVideo : function(){
+			if(this.VIDEO_QUEUE.length !== 0){
+				var playIndex = this.VIDEO_QUEUE.shift();
+
+				this.playerContainer[playIndex].playVideo();
+			}
+		},
+		addVideoQueue : function(event){
+			this.VIDEO_QUEUE.push(event.target.customOpt.index);
+		},
+		changePath : function(){
+			this.onPlayerReady = this.onPlayerReady.bind(this);
+			this.onPlayerStateChange = this.onPlayerStateChange.bind(this);
+			this.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
+		}
+	};
+
+	NEKOKKE.YOUTUBE.init();
+</script>
+</body>
+</html>
+```
+
+長い！
+
+まず、div自体がiframeに置き換わってしまうので
+
+外角をdivで囲いましょう。
+
+その後に、サムネイル画像の設定枠と
+
+画像指定領域のDOMを取得するために
+
+クラスを設定します。
+
+### before
+```
+<div class="player" data-youtube-id="7ROwBMBlEWM"></div>
+<div class="player" data-youtube-id="7ROwBMBlEWM"></div>
+```
+
+### after
+```
+<div class="youtube"><div class="player" data-youtube-id="7ROwBMBlEWM" data-thumbnail-url="#"></div></div>
+<div class="youtube"><div class="player" data-youtube-id="7ROwBMBlEWM" data-thumbnail-url="#"></div></div>
+```
+
+一旦urlは#にしますが
+
+urlの設定と動画のID設定は同じDOM要素にしたほうが修正しやすいですね。
+
+あとは切り替えを用意にするために.playerの兄弟要素でdivを作成し
+
+そこにbackground-imageにurlを設定します。
+
+```
+setBg : function(){
+	for (var i = 0; i < this.playerSelectors.length; i++) {
+		var tag = document.createElement('div'),
+			parentElement = this.playerSelectors[i].parentNode;
+		tag.style = 'background-image: url(' + this.playerSelectors[i].getAttribute('data-thumbnail-url') + ');';
+		tag.class = 'bg';
+		parentElement.insertBefore(tag, this.playerSelectors[i].nextSibling)
+	}
+}
+```
+
+setBgの実行はYT.Playerのnewの前に行いましょう。
+
+newしてしまうとdiv.playerがiframe.playerに変わってしまうので
+
+次はCSSですね。
+
+```
+.youtube {
+	display: inline-block;
+	position: relative;
+}
+.bg {
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center center;
+	position: absolute;
+	z-index: 1;
+}
+.player {
+	position: relative;
+	z-index: 1;
+}
+
+.is-play {
+	z-index: 2;
+}
+```
+
+こんな感じですね。
+
+イメージとしては
+
+```
+div.youtube
+	div.bg
+	div.player
+```
+
+で、このbgとplayerのz-indexを変更すること(クラスis-playの付け替え)で
+
+切り替えていきたいです。
+
+```
+addPlayClass : function(event){
+	event.target.a.classList.add('is-play');
+},
+removePlayClass : function(event){
+	event.target.a.classList.remove('is-play');
+}
+```
+
+クラスの付替えは共通処理にします。
+
+```
+if(event.data === YT.PlayerState.ENDED){
+	// 終了
+
+		// 4.自動再生が終了した時
+		this.addVideoQueue(event);
+		this.rePlayOtherVideo();
+		this.removePlayClass(event);
+} else if(event.data === YT.PlayerState.PLAYING){
+	// 再生
+		
+		// 1.ユーザーの操作で既に停止されている動画を再生した時
+		if(event.target.customOpt.index !== this.isPlayNum) {
+			this.playerContainer[this.isPlayNum].stopVideo();
+		}
+		
+		// 共通処理
+		this.isPlayNum = event.target.customOpt.index;
+		this.addPlayClass(event);
+} else if(event.data === YT.PlayerState.PAUSED){
+	// 停止
+		
+		// 2.ユーザーの操作で既に再生されている動画を停止した時
+		this.addVideoQueue(event);
+		this.rePlayOtherVideo();
+		this.removePlayClass(event);
+}
+```
+
+再生と2箇所の停止に処理を追加します。
+
+全体的には
+
+```
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+		.youtube {
+			display: inline-block;
+			position: relative;
+		}
+		.bg {
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-repeat: no-repeat;
+			background-size: cover;
+			background-position: center center;
+			position: absolute;
+			z-index: 1;
+		}
+		.player {
+			position: relative;
+			z-index: 1;
+		}
+		.is-play {
+			z-index: 2;
+		}
+	</style>
+</head>
+<body>
+<div class="youtube"><div class="player" data-youtube-id="7ROwBMBlEWM" data-thumbnail-url="https://dummyimage.com/600x400/000/fff.png&text=サムネイル"></div></div>
+<div class="youtube"><div class="player" data-youtube-id="7ROwBMBlEWM" data-thumbnail-url="https://dummyimage.com/600x400/000/fff.png&text=サムネイル"></div></div>
+
+<script>
+	var NEKOKKE = NEKOKKE || {};
+
+	NEKOKKE.YOUTUBE = {
+		opt : {
+			stopWaitTime : 6000
+		},
+		init : function(){
+			this.setParameters();
+			this.prepare();
+		},
+		setParameters : function(){
+			this.playerContainer = [];
+			this.playerSelectors = document.querySelectorAll('.player');
+			this.isPlayNum = -1;
+			this.VIDEO_QUEUE = [];
+		},
+		prepare : function(){
+			this.addAPI();
+			this.setId();
+			this.setBg();
+			this.changePath();
+			window.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady;
+		},
+		addAPI : function(){
+			var tag = document.createElement('script');
+			tag.src = "https://www.youtube.com/iframe_api";
+			var firstScriptTag = document.getElementsByTagName('script')[0];
+			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+		},
+		setId : function(){
+			for (var i = 0; i < this.playerSelectors.length; i++) {
+				this.playerSelectors[i].id = 'player' + i;
+			}
+		},
+		setBg : function(){
+			for (var i = 0; i < this.playerSelectors.length; i++) {
+				var tag = document.createElement('div'),
+					parentElement = this.playerSelectors[i].parentNode;
+				tag.style = 'background-image: url(' + this.playerSelectors[i].getAttribute('data-thumbnail-url') + ');';
+				tag.className = 'bg';
+				parentElement.insertBefore(tag, this.playerSelectors[i].nextSibling)
+			}
+		},
+		onYouTubeIframeAPIReady : function(){
+			for (var i = 0; i < this.playerSelectors.length; i++) {
+				this.playerContainer[i] = new YT.Player('player' + i, {
+					height: '360',
+					width: '640',
+					done : false,
+					videoId: this.playerSelectors[i].getAttribute('data-youtube-id'),
+					events: {
+						'onReady': this.onPlayerReady,
+						'onStateChange': this.onPlayerStateChange
+					}
+				});
+			}
+			for (var i = 0; i < this.playerSelectors.length; i++) {
+				this.playerContainer[i].customOpt = {
+					index : i
+				};
+			}
+		},
+		onPlayerReady : function(event){
+
+			event.target.mute();
+
+			if(this.isPlayNum === -1){
+				this.isPlayNum = event.target.customOpt.index;
+
+				event.target.playVideo();
+			} else {
+				this.VIDEO_QUEUE.push(event.target.customOpt.index);
+			}
+		},
+		onPlayerStateChange : function(event){
+			if(event.data === YT.PlayerState.ENDED){
+				// 終了
+
+					// 4.自動再生が終了した時
+					this.addVideoQueue(event);
+					this.rePlayOtherVideo();
+					this.removePlayClass(event);
+			} else if(event.data === YT.PlayerState.PLAYING){
+				// 再生
+					
+					// 1.ユーザーの操作で既に停止されている動画を再生した時
+					if(event.target.customOpt.index !== this.isPlayNum) {
+						this.playerContainer[this.isPlayNum].stopVideo();
+					}
+					
+					// 共通処理
+					this.isPlayNum = event.target.customOpt.index;
+					this.addPlayClass(event);
+			} else if(event.data === YT.PlayerState.PAUSED){
+				// 停止
+					
+					// 2.ユーザーの操作で既に再生されている動画を停止した時
+					this.addVideoQueue(event);
+					this.rePlayOtherVideo();
+					this.removePlayClass(event);
+			}
+		},
+		addPlayClass : function(event){
+			event.target.a.classList.add('is-play');
+		},
+		removePlayClass : function(event){
+			event.target.a.classList.remove('is-play');
+		},
+		rePlayOtherVideo : function(){
+			if(this.VIDEO_QUEUE.length !== 0){
+				var playIndex = this.VIDEO_QUEUE.shift();
+
+				this.playerContainer[playIndex].playVideo();
+			}
+		},
+		addVideoQueue : function(event){
+			this.VIDEO_QUEUE.push(event.target.customOpt.index);
+		},
+		changePath : function(){
+			this.onPlayerReady = this.onPlayerReady.bind(this);
+			this.onPlayerStateChange = this.onPlayerStateChange.bind(this);
+			this.onYouTubeIframeAPIReady = this.onYouTubeIframeAPIReady.bind(this);
+		}
+	};
+
+	NEKOKKE.YOUTUBE.init();
+</script>
+</body>
+</html>
+```
+
+[サンプルはこちら](http://nekokke.tech/sample/youtube/05/ "　")
+
+以上になります。
+
+ありがとうございます。
+
+参考（[https://developers.google.com/youtube/iframe_api_reference](https://developers.google.com/youtube/iframe_api_reference "　")）

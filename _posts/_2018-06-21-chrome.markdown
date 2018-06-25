@@ -28,9 +28,174 @@ tags: [css]
 
 そこでこの方法を紹介する。
 
-<div id="-">
+まずchromeでwebサイトを開いたら
+
+### 1.右クリックして「検証」をクリックしてほしい
+
+![](http://nekokke.tech/assets/img/chrome/1.png)
+
+　
+
+　
+
+### 2.次に右上の︙から「Seach all files」をクリック
+
+![](http://nekokke.tech/assets/img/chrome/2.png)
+
+　
+
+　
+
+### 3.そうすると下に新たに領域ができます。
+
+![](http://nekokke.tech/assets/img/chrome/3.png)
+
+　
+
+　
+
+### 4.その状態で左下の︙から「Coverage」をクリックしてください。
+
+![](http://nekokke.tech/assets/img/chrome/4.png)
+
+　
+
+　
+
+### 5.そうすると以下の画面になります。
+
+![](http://nekokke.tech/assets/img/chrome/5.png)
+
+　
+
+　
+
+### 6.左下の◯をクリックするとキャプチャリングがスタートします。クリックしてください。
+
+![](http://nekokke.tech/assets/img/chrome/6.png)
+
+　
+
+　
+
+### 7.そうするとこのような画面になります。
+
+![](http://nekokke.tech/assets/img/chrome/7.png)
+
+赤いバーが使用されていない部分
+
+緑のバーが使用されている部分
+
+ファイルごとに全体の使用比率がでます。
+
+そこでファイル名をクリックしてみましょう。
+
+![](http://nekokke.tech/assets/img/chrome/8.png)
+
+ファイルの中身単位で見ることができます。
+
+![](http://nekokke.tech/assets/img/chrome/9.png)
 
 
+先程言った下記で判断していきます。
 
-ありがとうございます。
+```
+赤バー：使用されていない部分
+
+緑バー：使用されている部分
+```
+
+これで簡単にそのCSSが「使用されている」のかがわかります。
+
+簡単ですね。
+
+## ただ、このやり方には2点注意点があります。
+
+<div id="-"></div>
+
+### 1.動的に表示される要素に関して
+
+ただ、これは現状レンダリングしているものを「使用している」と判断しています。
+
+例えば、このサイトがレスポンシブだったり
+
+JSによって動作する隠れた要素がある場合
+
+は**自分でWEBページを動かさないと「使用している」と判断されません。**
+
+そうゆう要素がある場合は
+
+全て動かしましょう。
+
+
+### 2.そしてもう一つ
+
+例えば、こんなものを用意しました。
+
+#### HTML
+```
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="./style.css"/>
+</head>
+<body>
+	<div class="target">style</div>
+</body>
+</html>
+```
+
+#### CSS
+```
+@charset "UTF-8";
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.target {
+	font-size: 12px;
+}
+.fake {
+	background-color: red;
+}
+.fake,
+.target {
+	font-weight: bold;
+}
+```
+
+[サンプルはこちら](http://nekokke.tech/sample/chrome/ "　"){:target="_blank"}
+
+.targetというクラスは実際にスタイルがあたっているクラス
+
+.fakeというクラスはスタイルがあたっていないクラス
+
+これを見てみるとおかしな点があります。
+
+![](http://nekokke.tech/assets/img/chrome/11.png)
+
+そうです。
+
+.targetや.fakeを単発でしている部分に関しては正しい挙動ですが
+
+その下の複数で指定している箇所に関しては
+
+**1つでも適応されている場合は「使用されている」と判断されてしまいます。**
+
+これは厄介ですね。
+
+## まとめ
+
+上記の2点さえ、気にしていれば
+
+とても便利な機能なので
+
+CSSをスリムにする時には
+
+ぜひ、お使いください。
+
+以上になります。ありがとうございます。
 
