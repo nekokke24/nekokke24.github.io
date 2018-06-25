@@ -1,0 +1,100 @@
+## 前段として
+
+私はchrome派だ
+
+今日はchromeを使ったCSS整理術をやる
+
+## 使用されていないCSSを探す方法
+
+文字検索というのも一つの手段ですが
+
+その場合、CSSの指定が入れ子構造になった時に
+
+条件をが絞れているのか分かりづらい。
+
+そこでこの方法を紹介する。
+
+まずchromeでwebサイトを開いたら
+
+### 1.右クリックして「検証」をクリックしてほしい
+
+![](http://nekokke.tech/assets/img/chrome/1.png)
+
+　
+
+　
+
+### 2.次に右上の︙から「Seach all files」をクリック
+
+![](http://nekokke.tech/assets/img/chrome/2.png)
+
+　
+
+　
+
+### 3.そうすると下に新たに領域ができます。
+
+![](http://nekokke.tech/assets/img/chrome/3.png)
+
+　
+
+　
+
+### 4.その状態で左下の︙から「Coverage」をクリックしてください。
+
+![](http://nekokke.tech/assets/img/chrome/4.png)
+
+　
+
+　
+
+### 5.そうすると以下の画面になります。
+
+![](http://nekokke.tech/assets/img/chrome/5.png)
+
+　
+
+　
+
+### 6.左下の◯をクリックするとキャプチャリングがスタートします。クリックしてください。
+
+![](http://nekokke.tech/assets/img/chrome/6.png)
+
+　
+
+　
+
+### 7.そうするとこのような画面になります。
+
+![](http://nekokke.tech/assets/img/chrome/7.png)
+
+赤いバーが使用されていない部分
+
+緑のバーが使用されている部分
+
+ファイルごとに全体の使用比率がでます。
+
+そこでファイル名をクリックしてみましょう。
+
+![](http://nekokke.tech/assets/img/chrome/8.png)
+
+ファイルの中身単位で見ることができます。
+
+![](http://nekokke.tech/assets/img/chrome/9.png)
+
+
+先程言った下記で判断していきます。
+
+```
+赤バー：使用されていない部分
+
+緑バー：使用されている部分
+```
+
+これで簡単にそのCSSが「使用されている」のかがわかります。
+
+簡単ですね。
+
+## ただ、このやり方には2点注意点があります。
+
+[続きはこちら…](http://nekokke.tech/chrome/#-)
