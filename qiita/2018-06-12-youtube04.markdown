@@ -104,6 +104,7 @@ onPlayerStateChange : function(event){
 	if(event.data === YT.PlayerState.PLAYING){
 		this.isPlayNum = event.target.customOpt.index;
 	}
+}
 ```
 
 再生に関しては他の処理はいらないでしょう。

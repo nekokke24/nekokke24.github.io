@@ -229,6 +229,8 @@ newしてしまうとdiv.playerがiframe.playerに変わってしまうので
 }
 ```
 
+<div id="-"></div>
+
 こんな感じですね。
 
 イメージとしては
