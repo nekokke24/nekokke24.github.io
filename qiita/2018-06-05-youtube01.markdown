@@ -140,4 +140,4 @@ YT.Playerというコンストラクタをnewしています。
 
 こいつが発火する前にplayerに色々と指示を与えてもundefinedですね。
 
-[続きはこちら…](http://nekokke.tech/youtube/#-)
+[続きはこちら…](http://nekokke.tech/youtube01/#-)
