@@ -147,6 +147,8 @@ onPlayerReady : function(event){
 }
 ```
 
+<div id="-"></div>
+
 次は再生部分です。
 
 [サンプルはこちら](/sample/youtube/03/index1.html "　"){:target="_blank"}
