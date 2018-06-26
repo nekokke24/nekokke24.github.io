@@ -12,8 +12,6 @@ P（プロデューサー）に相談して
 
 qiitaとの連携を進めていきます。
 
-[https://qiita.com/nekokke24/](https://qiita.com/nekokke24/ "　")
-
 今後は記事を書いたら、こちらでも展開しようと思います。
 
 では、タイトルどおり、動画周りを何部かに渡り載せていきます。
@@ -44,7 +42,8 @@ KVもスライドで横に動くとかより
 
 まず、iframeが展開される箱を作りましょう。
 
-```
+```html
+
 <div id="player"></div>
 ```
 ここでは**idのみ**です。
@@ -56,7 +55,8 @@ KVもスライドで横に動くとかより
 **装飾などありましたらこのdivの外に展開しましょう。**
 
 次にapi読み込み用のscriptタグをぶち込みます。
-```
+
+```js
 var tag = document.createElement('script');
 
 tag.src = "https://www.youtube.com/iframe_api";
@@ -73,7 +73,8 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 ここまでだとこんな感じです。
 
-```
+```html
+
 <!DOCTYPE html>
 <html>
 <body>
@@ -90,13 +91,11 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 </html>
 ```
 
-なんかいきなり色つきましたね。
-
 でもここまでってscriptタグ生成してAPI読み込みしているだけなので
 
 これでも良い
 
-```
+```html
 <!DOCTYPE html>
 <html>
 <body>
@@ -112,7 +111,7 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 ## youtubeAPI 基本編① -実行-
 
-```
+```js
 var player;
 function onYouTubeIframeAPIReady() {
 	player = new YT.Player('player', {
@@ -141,194 +140,4 @@ YT.Playerというコンストラクタをnewしています。
 
 こいつが発火する前にplayerに色々と指示を与えてもundefinedですね。
 
-コンストラクタをnewして引数にオブジェクトを渡しています。
-
-大きく分けて5つの種類があります。
-
-|-|-|
-| width（数値） | 動画の幅になります。初期値:640  |
-| height（数値） | 動画の高さになります。初期値:360 |
-| videoId（文字列） | 対象のYouTube動画のIDを指定します。 |
-| playerVars（オブジェクト） | 動画に対する様々な設定を指定できます。（繰り返し再生など..） |
-| events（オブジェクト） | 動画の状態変化（停止→再生など..）に対して関数を設定できます。 |
-
-サンプルではplayerVarsはありませんでしたが
-
-本来であればかなり活用するものです。
-
-ですが、量が多すぎるので別で紹介します。
-
-そして操作の基本となるのがeventsオブジェクトです。
-
-動画への指示に関して、**正確に動画の状態変化を取れるのはこのeventsオブジェクト**なので
-
-こいつが肝になります。
-
-この5つが基本となりますので覚えておいてください。
-
-ではeventsオブジェクトをみてみましょう。
-
-```
-events: {
-	'onReady': onPlayerReady,
-	'onStateChange': onPlayerStateChange
-}
-```
-
-onReadyはプレーヤーが読み込みを完了し、いつでも何かしらの操作を実行できる状態で発火します。
-
-onStateChangeは動画の状態が変化した時。
-
-この変化というのは動画には常に自身の状態を保持していてそれが下記の状態になります。
-
-|-|-|
-| -1 | 未開始 |
-| 0 | 終了 |
-| 1 | 再生中 |
-| 2 | 停止 |
-| 3 | バッファリング中 |
-| 5 | 頭出し済み |
-
-番号でなくてもYT自体に名前空間で指定されている変数を使用することもできます。
-
-|-|-|
-| 0 | YT.PlayerState.ENDED |
-| 1 | YT.PlayerState.PLAYING |
-| 2 | YT.PlayerState.PAUSED |
-| 3 | YT.PlayerState.BUFFERING |
-| 5 | YT.PlayerState.CUED |
-
-未開始に関しては用意されていないっぽいです。
-
-この状態に変化があった時
-
-例えば再生中から停止になった時などに発火します。
-
-他にも色々とイベントが用意されているので簡易的に紹介します。
-
-|-|-|
-| onReady | プレーヤーが読み込みを完了し、いつでも何かしらの操作を実行できる状態で発火します。 |
-| onStateChange | 動画の状態が変化した時に発火します。 |
-| onPlaybackQualityChange | 動画の再生画質が変わると発火します。 |
-| onPlaybackRateChange | 動画の再生速度が変わると発火します。 |
-| onError | 動画でエラーが発生すると発火します。 |
-| onApiChange | 動画がAPIメソッドでモジュールを読み込んだ時に発火します。 |
-
-では戻りましょう。
-
-onReady状態とonStateChange状態にそれぞれ関数を設定しているみたいです。
-
-### onReady
-```
-function onPlayerReady(event) {
-	event.target.playVideo();
-}
-```
-
-これは動画を再生していますね。
-
-つまり、読み込み完了状態になったら再生する。ということです。
-
-引数にeventを設定できるみたいです。
-
-event.targetで動画を参照できようになっています。
-
-### onStateChange
-```
-var done = false;
-function onPlayerStateChange(event) {
-	if (event.data == YT.PlayerState.PLAYING && !done) {
-		setTimeout(stopVideo, 6000);
-		done = true;
-	}
-}
-function stopVideo() {
-	player.stopVideo();
-}
-```
-
-event.dataには動画の状態が入っているみたいです。
-
-下にも関数があって
-
-player.stopVideo();は動画を停止しているみたいです。
-
-ここでわかるのは
-
-**event.target と player（つまりnewしたYT.Player）は同義**といことですね。
-
-stopVideoの関数は特にYTPlayerのeventに紐づけているわけではないですから
-
-引数にeventを設定できないためこのような書き方をしたのでしょう。
-
-読んでいくと、動画の状態変化が発生した時に
-
-「状態が再生中」且つ「done変数(フラグ)がfalse」の場合は
-
-6秒後に動画を停止、done変数(フラグ)をtrueに変更
-
-再度再生された場合はdone変数(フラグ)がtrueとなっているため
-
-上記の条件に該当せず、停止されない
-
-つまり「最初の1回目は6秒後に停止、2回目以降は通常再生」
-
-ということですね。
-
-## youtubeAPI 基本編① -まとめ-
-
-ここまでまとめると
-
-```
-<!DOCTYPE html>
-<html>
-<body>
-<div id="player"></div>
-
-<script>
-	var tag = document.createElement('script');
-
-	tag.src = "https://www.youtube.com/iframe_api";
-	var firstScriptTag = document.getElementsByTagName('script')[0];
-	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-	var player;
-	function onYouTubeIframeAPIReady() {
-		player = new YT.Player('player', {
-			height: '360',
-			width: '640',
-			videoId: 'M7lc1UVf-VE',
-			events: {
-				'onReady': onPlayerReady,
-				'onStateChange': onPlayerStateChange
-			}
-		});
-	}
-
-	function onPlayerReady(event) {
-		event.target.playVideo();
-	}
-
-	var done = false;
-	function onPlayerStateChange(event) {
-		if (event.data == YT.PlayerState.PLAYING && !done) {
-			setTimeout(stopVideo, 6000);
-			done = true;
-		}
-	}
-	function stopVideo() {
-		player.stopVideo();
-	}
-</script>
-</body>
-</html>
-```
-
-これが一般的な動画の再生フローになります。
-
-[サンプルはこちら](http://nekokke.tech/sample/youtube/01/ "　")
-
-
-以上になります。ありがとうございます。
-
-参考（[https://developers.google.com/youtube/iframe_api_reference](https://developers.google.com/youtube/iframe_api_reference "　")）
+[続きはこちら…](http://nekokke.tech/youtube/#-)
