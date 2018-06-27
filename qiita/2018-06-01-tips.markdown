@@ -27,36 +27,9 @@ line-heightまで考慮した余白取りは
 私が最近考えて自分で使っているコードを何個か紹介していきます。
 
 ## 01
-<ul class="list">
-	<li>1</li>
-	<li>2</li>
-	<li>3</li>
-	<li>4</li>
-	<li>5</li>
-</ul>
 
-<style>
-.list {
-	display: flex;
-	flex-wrap: wrap;
-}
-.list > li {
-	width: calc( (100% - ( 25px * (4-1) )) * (1/4) );
-	height: 200px;
-	box-sizing: border-box;
-	border: solid 1px black;
-	
-}
-.list > li:not(:nth-child(4n+1)) {
-	margin-left: 25px;
-}
-.list > li:nth-child(4) ~ li {
-	margin-top: 25px;
-}
-</style>
----
+```html
 
-```
 <ul class="list">
 	<li>1</li>
 	<li>2</li>
@@ -85,6 +58,8 @@ line-heightまで考慮した余白取りは
 }
 </style>
 ```
+
+[→実装したサンプルはこちらにあります](http://nekokke.tech/tips/)
 
 以前のコードでも紹介しましたが
 
@@ -92,30 +67,12 @@ line-heightまで考慮した余白取りは
 
 最小DOM数で構成できる点がなんともクールだと思う。
 
+
+
 ## 02
-<div class="section">内部コンテンツ</div>
-<div class="section">内部コンテンツ</div>
 
-<style>
-.section {
-	box-sizing: border-box;
-	background-color: rgb(206, 136, 123);
-	height: 100px;
-	text-align: center;
-}
-.section + .section {
-	margin-top: 20px;
-}
-@media (min-width: 500px) {
-	.section {
-		padding-left: calc((100% - 500px) / 2);
-		padding-right: calc((100% - 500px) / 2);
-	}
-}
-</style>
----
+```html
 
-```
 <div class="section"></div>
 <div class="section"></div>
 
@@ -137,6 +94,8 @@ line-heightまで考慮した余白取りは
 }
 </style>
 ```
+
+[→実装したサンプルはこちらにあります](http://nekokke.tech/tips/)
 
 今まで色を画面いっぱいに広げて塗るという行為と
 
@@ -147,32 +106,9 @@ line-heightまで考慮した余白取りは
 渋い
 
 ## 03
-<div class="flex">
-	<div class="flex-item"></div>
-	<div class="flex-item"></div>
-	<div class="flex-item"></div>
-</div>
 
-<style>
-.flex {
-	display: flex;
-	border: solid 1px black;
-}
-.flex-item {
-	width: 50px;
-	height: 100px;
-	background-color: rgb(206, 136, 123);
-}
-.flex-item + .flex-item {
-	margin-left: 10px;
-}
-.flex-item:last-child {
-		margin-left: auto;
-}
-</style>
----
+```html
 
-```
 <div class="flex">
 	<div class="flex-item"></div>
 	<div class="flex-item"></div>
@@ -197,6 +133,8 @@ line-heightまで考慮した余白取りは
 }
 </style>
 ```
+
+[→実装したサンプルはこちらにあります](http://nekokke.tech/tips/)
 
 ちょっと前に
 
@@ -207,31 +145,9 @@ line-heightまで考慮した余白取りは
 marginのautoはflex内部でも使えるところがなんとも粋
 
 ## 04
-<div class="clip"></div>
 
-<style>
-.clip {
-	clip-path: inset(0 0 0 0);
-    background-color: rgb(206, 136, 123);
-    animation-name: anim-clip;
-    animation-duration: 2s;
-    animation-timing-function: ease-out;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-    height: 100px;
-}
-@keyframes anim-clip {
-	0% {
-		clip-path: inset(0 0 0 0);
-	}
-	100% {
-		clip-path: inset(100px 0 0 0);
-	}
-}
-</style>
----
+```html
 
-```
 <div class="clip"></div>
 
 <style>
@@ -255,6 +171,8 @@ marginのautoはflex内部でも使えるところがなんとも粋
 }
 </style>
 ```
+
+[→実装したサンプルはこちらにあります](http://nekokke.tech/tips/)
 
 アニメーションを行うとき
 
@@ -279,41 +197,9 @@ ie,edge向けに下位互換を提供するのはあり
 手数としては持っておきたいテクニック
 
 ## 05
-<div class="read">
-	<div class="txt">
-		情に棹させば流される。智に働けば角が立つ。どこへ越しても住みにくいと悟った時、詩が生れて、画が出来る。とかくに人の世は住みにくい。意地を通せば窮屈だ。 
-		とかくに人の世は住みにくい。
-		どこへ越しても住みにくいと悟った時、詩が生れて、画が出来る。意地を通せば窮屈だ。山路を登りながら、こう考えた。智に働けば角が立つ。どこへ越しても住みにくいと悟った時、詩が生れて、画が出来る。智に働けば角が立つ。 
-		とかくに人の世は住みにくい。山路を登りながら、こう考えた。とかくに人の世は住みにくい。住みにくさが高じると、安い所へ引き越したくなる。住みにくさが高じると、安い所へ引き越したくなる。情に棹させば流される。 
-	</div>
-</div>
-<div class="read">
-	<div class="txt">
-		情に棹させば流される。智に働けば角が立つ。どこへ越しても住みにくいと悟った時、詩が生れて、画が出来る。とかくに人の世は住みにくい。意地を通せば窮屈だ。 
-		とかくに人の世は住みにくい。
-		どこへ越しても住みにくいと悟った時、詩が生れて、画が出来る。意地を通せば窮屈だ。山路を登りながら、こう考えた。智に働けば角が立つ。どこへ越しても住みにくいと悟った時、詩が生れて、画が出来る。智に働けば角が立つ。 
-		とかくに人の世は住みにくい。山路を登りながら、こう考えた。とかくに人の世は住みにくい。住みにくさが高じると、安い所へ引き越したくなる。住みにくさが高じると、安い所へ引き越したくなる。情に棹させば流される。 
-	</div>
-</div>
 
-<style>
-.read {
-	font-size: 13px;
-	line-height: 20px;
-}
-.read > .txt {
-	margin-bottom: calc((20 - 13) / 2 * -1px);
-}
-.read:first-child > .txt {
-	margin-top: calc((20 - 13) / 2 * -1px);
-}
-.read + .read {
-	margin-top: calc( 32px - (20px - 13px) );
-}
-</style>
----
+```html
 
-```
 <div class="read">
 	<div class="txt">
 		情に棹させば流される。智に働けば角が立つ。どこへ越しても住み...
@@ -342,7 +228,7 @@ ie,edge向けに下位互換を提供するのはあり
 }
 </style>
 ```
-
+[→実装したサンプルはこちらにあります](http://nekokke.tech/tips/)
 
 まずやりたきことは
 
@@ -515,7 +401,8 @@ font-sizeに伴った余白を用意してあげれば良いです。
 
 では先程のコードをもう一度見ましょう。
 
-```
+```html
+
 <div class="read">
 	<div class="txt">
 		情に棹させば流される。智に働けば角が立つ。どこへ越しても住み...
