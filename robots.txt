@@ -1,4 +1,3 @@
 User-Agent:*
-Disallow:/tags/
 
 Sitemap:http://nekokke.tech/sitemap.xml
