@@ -1,9 +1,9 @@
 ---
 layout: post
 title: SVGの扱い方① (書き出し方)
-date: 2018-06-20 00:00:00 +0900
+date: 2018-06-28 00:00:00 +0900
 description: SVGの扱い方① (書き出し方)
-img: thumbnail-180621.png
+img: thumbnail-180628.png
 tags: [etc]
 ---
 <style>
@@ -36,7 +36,7 @@ svgが向いているのはアイコンなどのシンプルな図形
 
 ### 1.イラストレーターからオブジェクト作成します。
 
-![](../assets/img/svg/1.png)
+![](http://nekokke.tech/assets/img/svg/1.png)
 
 ### 2.小数点に関して
 
@@ -52,7 +52,7 @@ svgが向いているのはアイコンなどのシンプルな図形
 
 私はX,Yは気にせず切り捨て、W,Hは小数点第一位を四捨五入してます。
 
-![](../assets/img/svg/2.png)
+![](http://nekokke.tech/assets/img/svg/2.png)
 
 ### 3.アートボードによる書き出し
 
@@ -64,11 +64,11 @@ svgが向いているのはアイコンなどのシンプルな図形
 
 ショートカットはShift + O
 
-![](../assets/img/svg/3.png)
+![](http://nekokke.tech/assets/img/svg/3.png)
 
 ### 4.アートボード化
 
-![](../assets/img/svg/4.png)
+![](http://nekokke.tech/assets/img/svg/4.png)
 
 選択ツールとアートボードツールを切り替えながら行うと楽です。
 
@@ -92,7 +92,7 @@ Commandを離して（アートボードツール）オブジェクトをクリ�
 
 今回は無名でいきます。
 
-![](../assets/img/svg/5.png)
+![](http://nekokke.tech/assets/img/svg/5.png)
 
 ファイル→書き出し→スクリーン用に書き出し
 
@@ -102,7 +102,7 @@ Commandを離して（アートボードツール）オブジェクトをクリ�
 
 クリックすると下記の画面になります。
 
-![](../assets/img/svg/6.png)
+![](http://nekokke.tech/assets/img/svg/6.png)
 
 右側が設定になります。
 
@@ -118,7 +118,7 @@ iOS Android と書いてある文字の横の車輪のマークをクリック�
 
 そうすると形式ごとの設定画面になります。
 
-![](../assets/img/svg/7.png)
+![](http://nekokke.tech/assets/img/svg/7.png)
 
 ### 7.svgの書き出し設定
 
@@ -126,53 +126,9 @@ svgをクリックしてください。
 
 本日、伝えたい部分は主にここになります。
 
-![](../assets/img/svg/8.png)
+![](http://nekokke.tech/assets/img/svg/8.png)
 
 これがsvgの設定になります。
 
-まず上から
-
-#### スタイル
-→スタイリングを何で設定するか？という設定です。
-```
-- インラインスタイル : タグに直接style属性で埋め込みます。
-- 内部CSS
-- プレゼンテーション属性
-```
-
-#### フォント
-→
-```
-- アウトラインに変換
-- SVG
-```
-
-#### 画像
-→
-```
-- リンク
-- 保持
-- 埋め込む
-```
-
-#### オブジェクトID
-→
-```
-- 最小
-- レイヤー名
-- 固有
-```
-
-#### 小数点以下の桁数
-→
-```
-- 1から
-```
-
-#### 縮小
-
-#### レスポンシブ
-
-
-以上になります。ありがとうございます。
+[続きはこちら…](http://nekokke.tech/svg/#-)
 
